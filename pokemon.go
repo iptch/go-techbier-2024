@@ -3,12 +3,9 @@ package main
 import (
 	"encoding/json"
 	"net/http"
-)
 
-type AllPokemonResponse struct {
-	Results []Pokemon `json:"results"`
-	NextUrl string    `json:"next"`
-}
+	"github.com/TheZoraiz/ascii-image-converter/aic_package"
+)
 
 type Pokemon struct {
 	Name string `json:"name"`
@@ -20,14 +17,20 @@ type PokemonType struct {
 	Url  string `json:"url"`
 }
 
+type AllPokemonResponse struct {
+	Results []Pokemon `json:"results"`
+	NextUrl string    `json:"next"`
+}
+
 type PokemonResponse struct {
 	Types []struct {
 		Slot int         `json:"slot"`
 		Type PokemonType `json:"type"`
 	} `json:"types"`
+	Sprites map[string]interface{}
 }
 
-func GetPokemon() ([]Pokemon, error) {
+func GetAllPokemon() ([]Pokemon, error) {
 	url := "https://pokeapi.co/api/v2/pokemon"
 
 	people := []Pokemon{}
@@ -70,14 +73,44 @@ func (p Pokemon) getResponse() (PokemonResponse, error) {
 func (p Pokemon) GetTypes() ([]string, error) {
 	response, err := p.getResponse()
 	if err != nil {
-		return []string{}, nil
+		return []string{}, err
 	}
 
-    types := []string{}
-    for _, type_ := range response.Types {
-        types = append(types, type_.Type.Name)
-    }
+	types := []string{}
+	for _, type_ := range response.Types {
+		types = append(types, type_.Type.Name)
+	}
 
-    return types, nil
+	return types, nil
 
+}
+
+func (p Pokemon) GetAsciiSprite(width int) (string, error) {
+	response, err := p.getResponse()
+	if err != nil {
+		return "", err
+	}
+
+	spritesUrl := response.Sprites["other"].(map[string]interface{})["official-artwork"].(map[string]interface{})["front_default"].(string)
+    //resp, err := http.Get(spritesUrl)
+    //if err != nil {
+    //    return "", err
+    //}
+
+    //img, _, err := image.Decode(resp.Body)
+    //if err != nil {
+    //    return "", err
+    //}
+
+    //convertOptions := convert.DefaultOptions
+	//convertOptions.FixedWidth = width
+
+    //converter := convert.NewImageConverter()
+    //return converter.Image2ASCIIString(img, &convertOptions), nil
+
+    flags := aic_package.DefaultFlags()
+    flags.Width = width
+    flags.Colored = true
+
+    return aic_package.Convert(spritesUrl, flags)
 }

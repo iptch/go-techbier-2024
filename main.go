@@ -17,10 +17,10 @@ func docStyle() lipgloss.Style {
 func otherStyle() lipgloss.Style {
 	return lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("228")).
-		BorderBackground(lipgloss.Color("63")).
 		BorderTop(true).
-		BorderLeft(true)
+		BorderLeft(true).
+		BorderRight(true).
+		BorderBottom(true)
 }
 
 type PokemonItem struct {
@@ -48,39 +48,47 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 	case tea.WindowSizeMsg:
-		x, y := docStyle().GetFrameSize()
-		m.list.SetSize(msg.Width-x-32, msg.Height-y)
+		//x, y := docStyle().GetFrameSize()
+		//m.list.SetSize(msg.Width-x - 64, msg.Height-y)
 	}
 
-    // propagate to the underlying list model
+	// propagate to the underlying list model
 	var cmd tea.Cmd
 	m.list, cmd = m.list.Update(msg)
 	return m, cmd
 }
 
 func (m model) View() string {
-	speciesNames, err := m.list.SelectedItem().(PokemonItem).inner.GetTypes()
-	if err != nil {
-		panic(err)
+	var sprite string
+	var err error
+
+	selectedItem := m.list.SelectedItem()
+	if selectedItem != nil {
+		sprite, err = selectedItem.(PokemonItem).inner.GetAsciiSprite(60)
+		if err != nil {
+			panic(err)
+		}
 	}
 
-	return lipgloss.JoinHorizontal(lipgloss.Left, docStyle().Render(m.list.View()), otherStyle().Height(m.list.Height()).Width(32).Render(strings.Join(speciesNames, ", ")))
+	return lipgloss.JoinHorizontal(lipgloss.Top, docStyle().Width(80).Render(m.list.View()), otherStyle().Height(m.list.Height()).Render(sprite))
 }
 
 func main() {
 	items := []list.Item{}
-	people, err := GetPokemon()
+	people, err := GetAllPokemon()
 	if err != nil {
 		panic(err)
 	}
+
+	// create list from pokemon items
 	for _, person := range people {
 		items = append(items, PokemonItem{
 			inner: person,
 		})
 
 	}
-	m := model{list: list.New(items, list.NewDefaultDelegate(), 0, 0)}
-	m.list.Title = "Star Wars People"
+	m := model{list: list.New(items, list.NewDefaultDelegate(), 80, 40)}
+	m.list.Title = "Pokedex by ipt"
 
 	p := tea.NewProgram(m, tea.WithAltScreen())
 
@@ -89,4 +97,3 @@ func main() {
 		os.Exit(1)
 	}
 }
-
