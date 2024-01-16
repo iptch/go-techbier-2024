@@ -33,7 +33,7 @@ type PokemonResponse struct {
 func GetAllPokemon() ([]Pokemon, error) {
 	url := "https://pokeapi.co/api/v2/pokemon"
 
-	people := []Pokemon{}
+	pokemon := []Pokemon{}
 
 	for url != "" {
 		resp, err := http.Get(url)
@@ -41,18 +41,18 @@ func GetAllPokemon() ([]Pokemon, error) {
 			return []Pokemon{}, err
 		}
 
-		var peopleResponse AllPokemonResponse
-		err = json.NewDecoder(resp.Body).Decode(&peopleResponse)
+		var allPokemonResponse AllPokemonResponse
+		err = json.NewDecoder(resp.Body).Decode(&allPokemonResponse)
 		if err != nil {
 			return []Pokemon{}, err
 		}
 
-		people = append(people, peopleResponse.Results...)
+		pokemon = append(pokemon, allPokemonResponse.Results...)
 
-		url = peopleResponse.NextUrl
+		url = allPokemonResponse.NextUrl
 	}
 
-	return people, nil
+	return pokemon, nil
 }
 
 func (p Pokemon) getResponse() (PokemonResponse, error) {
