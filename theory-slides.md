@@ -12,9 +12,10 @@ Presented by Zak Cook & Selim Kälin
 
 - Go Basics
 - Standard Types and Syntax
-- Structs and Interfaces
-- References and Pointers
+- Structs 
 - Functions and Methods
+- Interfaces
+- References and Pointers
 - Control Structures
 - Standard Library
 - Imports
@@ -117,9 +118,9 @@ const Pi float64 = 3.1415926
 
 ---
 
-## Structs and Interfaces
+## Structs 
 
-Structs are a sequence of named elements, called fields
+Structs are a sequence of named elements, called fields:
 
 ```go
 // Empty struct
@@ -142,3 +143,165 @@ type Consultant struct {
 ```
 
 ---
+
+## Functions and Methods
+
+To distinguish between functions and methods in Go, we have to look at the context in which they are defined:
+
+- Functions
+  - standalone procedure, not associated with any object, i.e. a struct 
+
+- Methods:
+  - like a function but contains a receiver, which specifies what type the method belongs to
+  - receiver can be any type, but in most cases it is a struct or pointer to a struct
+
+Syntax:
+```go
+// Exported function with no return value
+func SayHello() {
+    fmt.Println("Hello!")
+}
+
+// Unexported method with a return value
+func (c Consultant) getAhvNumber() ahvNumber {
+    return c.ahvNumber
+}
+```
+
+---
+
+## Interfaces 
+
+Interfaces specify a list of methods. A type set defined by an interface is the type set that implements all of those methods.
+
+> **IMPORTANT**
+> In go, interfaces are implemented **implicitly**! There is no explicit declaration of intent, such as the keyword `implements`.
+
+Syntax:
+
+```go
+// If it quacks like a duck it is a duck
+type Duck interface {
+    Quack()
+}
+
+type Goose struct {}
+
+// Oops, I guess a goose is a duck
+func (g Goose) Quack() {
+    fmt.Println("Quack!")
+}
+
+```
+
+---
+
+## Pointers and References
+
+Pointers are declared using the `*<variable>` syntax. Similarly, to pass a reference to a variable, we use the syntax `&<variable>`.
+
+```go
+package main
+
+import "fmt"
+
+func incrementByValue(x int) {
+    x = x + 1 
+}
+
+func incrementByReference(x *int) {
+    *x = *x + 1
+}
+
+func main() {
+    myValue := 5
+    incrementByValue(a)
+    fmt.Println(a)            // Output: 5
+
+    incrementByReference(&a)
+    fmt.Println(a)            // Output: 6
+}
+```
+
+---
+
+## Control Structures
+
+Go offers the following control structures:
+- if / else if / else
+- switch / case
+- for / range / break / continue
+- (select, defer, panic, go to)
+
+---
+
+```go
+// If / else if / else structure
+if condition {
+    doSomething()
+} else if someOtherCondition {
+    doSomethingElse()
+} else {
+    doNothing()
+}
+
+// Switch-case structure
+switch switchValue {
+case caseOneValue:
+    // Code for case 1
+case caseTwoValue:
+    // Code for case 2
+default:
+    // Code for default case
+}
+```
+
+---
+
+```go
+// For loop
+for i := 0; i < 10; i++ {
+    fmt.Sprintf("Current number: %d", i)
+}
+
+// To imitate a while loop
+for condition {
+    // Code to execute while condition is true
+}
+
+// Range structure 
+for index, value := range someCollection {
+    fmt.Sprintf("Value at index %d: %d", index, value)
+}
+```
+
+---
+
+## Import Statements
+
+- As stated previously, everything in Go belongs to a package, declared by the keyword `package`
+- Packages are imported using the `import` statement at the beginning of a file
+- Package management is awesome! Look at the following example:
+
+```go
+package main
+
+// Let's import multiple packages at once
+import (
+    "fmt"                                   // Standard library
+    "math"                                  // Standard library
+    http "net/http"                         // Create an alias called http
+    "github.com/charmbracelet/bubbles/list" // External package we will need
+)
+
+```
+
+---
+
+## Standard Library
+
+- Go features a powerful and extensive standard library
+- It covers areas such as I/O operations, text and image processing, cryptography, network programming, etc.
+- You can find an overview here: https://pkg.go.dev/std
+
+
