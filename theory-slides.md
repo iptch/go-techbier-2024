@@ -17,8 +17,8 @@ Presented by Zak Cook & Selim Kälin
 - Interfaces
 - References and Pointers
 - Control Structures
-- Standard Library
 - Imports
+- Standard Library
 - Go Management Tools
 
 ---
@@ -303,5 +303,25 @@ import (
 - Go features a powerful and extensive standard library
 - It covers areas such as I/O operations, text and image processing, cryptography, network programming, etc.
 - You can find an overview here: https://pkg.go.dev/std
+
+---
+## Go Management Tools
+
+- Just like its package management, Go offers very capable management tools
+  - `go fmt` for code formatting
+  - `go mod`, `go get`, and `go install` for module and dependency management
+  - `go test` for testing
+
+---
+
+## Useful Resources
+
+- Go official documentation: https://go.dev/doc/
+- Effective Go (must-read): https://go.dev/doc/effective_go
+- awesome-go: https://github.com/avelino/awesome-go
+
+
+
+
 
 
