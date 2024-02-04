@@ -30,6 +30,9 @@ type PokemonResponse struct {
 	Sprites map[string]interface{}
 }
 
+// GetAllPokemon reads all available Pokémon from the pokeapi incrementally.
+// A GET on the url provided returns a list of results and a next URL to perform
+// another GET request on for another set of Pokémon.
 func GetAllPokemon() ([]Pokemon, error) {
 	url := "https://pokeapi.co/api/v2/pokemon"
 
@@ -92,25 +95,25 @@ func (p Pokemon) GetAsciiSprite(width int) (string, error) {
 	}
 
 	spritesUrl := response.Sprites["other"].(map[string]interface{})["official-artwork"].(map[string]interface{})["front_default"].(string)
-    //resp, err := http.Get(spritesUrl)
-    //if err != nil {
-    //    return "", err
-    //}
+	//resp, err := http.Get(spritesUrl)
+	//if err != nil {
+	//    return "", err
+	//}
 
-    //img, _, err := image.Decode(resp.Body)
-    //if err != nil {
-    //    return "", err
-    //}
+	//img, _, err := image.Decode(resp.Body)
+	//if err != nil {
+	//    return "", err
+	//}
 
-    //convertOptions := convert.DefaultOptions
+	//convertOptions := convert.DefaultOptions
 	//convertOptions.FixedWidth = width
 
-    //converter := convert.NewImageConverter()
-    //return converter.Image2ASCIIString(img, &convertOptions), nil
+	//converter := convert.NewImageConverter()
+	//return converter.Image2ASCIIString(img, &convertOptions), nil
 
-    flags := aic_package.DefaultFlags()
-    flags.Width = width
-    flags.Colored = true
+	flags := aic_package.DefaultFlags()
+	flags.Width = width
+	flags.Colored = true
 
-    return aic_package.Convert(spritesUrl, flags)
+	return aic_package.Convert(spritesUrl, flags)
 }
