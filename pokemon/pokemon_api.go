@@ -1,4 +1,4 @@
-package main
+package pokemon
 
 import (
 	"encoding/json"
@@ -95,21 +95,6 @@ func (p Pokemon) GetAsciiSprite(width int) (string, error) {
 	}
 
 	spritesUrl := response.Sprites["other"].(map[string]interface{})["official-artwork"].(map[string]interface{})["front_default"].(string)
-	//resp, err := http.Get(spritesUrl)
-	//if err != nil {
-	//    return "", err
-	//}
-
-	//img, _, err := image.Decode(resp.Body)
-	//if err != nil {
-	//    return "", err
-	//}
-
-	//convertOptions := convert.DefaultOptions
-	//convertOptions.FixedWidth = width
-
-	//converter := convert.NewImageConverter()
-	//return converter.Image2ASCIIString(img, &convertOptions), nil
 
 	flags := aic_package.DefaultFlags()
 	flags.Width = width
