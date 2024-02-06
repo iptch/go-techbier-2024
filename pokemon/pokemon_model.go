@@ -2,7 +2,9 @@ package pokemon
 
 import (
 	"fmt"
+	"math/rand"
 
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -12,6 +14,7 @@ import (
 // define some custom types needed for our TUI
 type appState int
 type downloadCompleted struct{ items []list.Item }
+type randomPokemonMsg struct{ randomPokemon list.Item }
 
 // we will define a custom error message type for error handling ...
 type errMsg struct{ err error }
@@ -22,15 +25,17 @@ func (e errMsg) Error() string { return e.err.Error() }
 const (
 	downloading appState = iota // iota is 0 here
 	browsing                    // implicitly uses iota, which is now 1
+	encounter
 )
 
 // Define the model for our TUI. For any type to be a Model, it has to implement
 // the Model interface: https://pkg.go.dev/github.com/charmbracelet/bubbletea@v0.25.0#Model
 type model struct {
-	state   appState
-	spinner spinner.Model
-	list    list.Model
-	error   error
+	state      appState
+	enemyIndex int
+	spinner    spinner.Model
+	list       list.Model
+	error      error
 }
 
 // InitialModel instantiates a model with a spinner for the waiting screen,
@@ -44,11 +49,19 @@ func InitialModel() model {
 	l := list.New(items, list.NewDefaultDelegate(), 50, 50)
 	l.Title = "Pokédex by ipt"
 
+	l.AdditionalShortHelpKeys = func() []key.Binding {
+		return []key.Binding{key.NewBinding(
+			key.WithKeys("e"),
+			key.WithHelp("e", "encounter Pokémon"),
+		)}
+	}
+
 	return model{
-		state:   downloading,
-		spinner: s,
-		list:    l,
-		error:   nil,
+		state:      downloading,
+		enemyIndex: 0,
+		spinner:    s,
+		list:       l,
+		error:      nil,
 	}
 }
 
@@ -110,14 +123,44 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case browsing:
+
+		switch msg := msg.(type) {
+		case tea.KeyMsg:
+
+			switch msg.String() {
+
+			// Encounter a random enemy Pokémon
+			case "e":
+				m.enemyIndex = m.getRandomPokemon()
+				m.state = encounter
+			}
+		}
 		// propagate to the underlying list model
 		var cmd tea.Cmd
 		m.list, cmd = m.list.Update(msg)
 		return m, cmd
+
+	case encounter:
+
+		switch msg := msg.(type) {
+		case tea.KeyMsg:
+			switch msg.String() {
+			case "ctrl+c", "q", "esc":
+				m.state = browsing
+				return m, nil
+			}
+
+		default:
+			return m, nil
+
+		}
 	}
 
 	return m, nil
+}
 
+func (m model) getRandomPokemon() int {
+	return rand.Intn(len(m.list.Items()))
 }
 
 // View renders the program's UI, which is just a string. The view is
@@ -152,6 +195,18 @@ func (m model) View() string {
 				Height(m.list.Height()).
 				Render(sprite),
 		)
+
+	case encounter:
+		m.list.Select(m.enemyIndex)
+		sprite, err := m.list.SelectedItem().(PokemonItem).inner.GetAsciiSprite(60)
+		if err != nil {
+			m.error = err
+			return fmt.Sprintf("\nThere was an error in the application: %v\n\n", m.error)
+		}
+		return otherStyle().
+			Height(50).
+			Render(sprite)
+
 	default:
 		return "Unknown state"
 	}
