@@ -29,6 +29,7 @@ type AllPokemonResponse struct {
 }
 
 type PokemonResponse struct {
+	Name  string `json:"name"`
 	Types []struct {
 		Slot int         `json:"slot"`
 		Type PokemonType `json:"type"`

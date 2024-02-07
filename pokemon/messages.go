@@ -5,5 +5,5 @@ type downloadCompleted struct {
 }
 
 type newPokemon struct {
-	pokemon Pokemon
+	pokemon *PokemonResponse
 }

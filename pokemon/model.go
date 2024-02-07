@@ -1,11 +1,8 @@
 package pokemon
 
 import (
-	"fmt"
-
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
 // Define the model for our TUI. For any type to be a Model, it has to implement
@@ -17,7 +14,9 @@ type model struct {
 // InitialModel instantiates a model with a spinner for the waiting screen,
 // a list to hold all retrieved Pokemon items, the initial app and error states.
 func InitialModel() model {
-	l := list.New([]list.Item{}, list.NewDefaultDelegate(), 0, 0)
+	delegate := list.NewDefaultDelegate()
+
+	l := list.New([]list.Item{}, delegate, 0, 0)
 	l.Title = "Pokédex by ipt"
 
 	return model{list: l}
@@ -34,7 +33,10 @@ func (m model) DownloadPokemon(p *tea.Program) {
 	// create list from Pokémon items
 	for downloadedPokemon := range c {
 		for _, pokemon := range downloadedPokemon {
-			p.Send(newPokemon{pokemon})
+			response, err := pokemon.getResponse()
+			if err == nil {
+				p.Send(newPokemon{&response})
+			}
 		}
 	}
 	p.Send(downloadCompleted{})
@@ -65,7 +67,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// download has started
 			cmds = append(cmds, m.list.StartSpinner())
 		}
-		cmds = append(cmds, m.list.InsertItem(len(m.list.Items()), PokemonItem{&msg.pokemon}))
+		cmds = append(cmds, m.list.InsertItem(len(m.list.Items()), (*PokemonItem)(msg.pokemon)))
 		return m, tea.Batch(cmds...)
 	case downloadCompleted:
 		m.list.StopSpinner()
@@ -82,16 +84,5 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // View renders the program's UI, which is just a string. The view is
 // rendered after every Update.
 func (m model) View() string {
-	render := m.list.View()
-
-	selectedItem := m.list.SelectedItem()
-	if m.list.IsFiltered() && selectedItem != nil {
-		sprite, err := selectedItem.(PokemonItem).inner.GetAsciiSprite(64)
-		if err != nil {
-			sprite = fmt.Sprintf("Error fetching sprite for Pokemon at %s: %s", selectedItem.(PokemonItem).inner.Url, err)
-		}
-		render = lipgloss.JoinHorizontal(lipgloss.Top, render, sprite)
-	}
-
-	return render
+	return m.list.View()
 }
