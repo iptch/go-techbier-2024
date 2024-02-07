@@ -48,7 +48,7 @@ func GetAllPokemon(c chan []Pokemon) error {
 		if err != nil {
 			return err
 		}
-        defer resp.Body.Close()
+		defer resp.Body.Close()
 
 		var allPokemonResponse AllPokemonResponse
 		err = json.NewDecoder(resp.Body).Decode(&allPokemonResponse)
@@ -73,7 +73,7 @@ func (p *Pokemon) getResponse() (PokemonResponse, error) {
 	if err != nil {
 		return PokemonResponse{}, err
 	}
-    defer resp.Body.Close()
+	defer resp.Body.Close()
 
 	p.cachedResponse = new(PokemonResponse)
 	err = json.NewDecoder(resp.Body).Decode(p.cachedResponse)
@@ -108,7 +108,7 @@ func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-    defer resp.Body.Close()
+	defer resp.Body.Close()
 
 	json, err := io.ReadAll(resp.Body)
 	if err != nil {

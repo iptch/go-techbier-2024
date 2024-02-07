@@ -58,6 +58,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		}
+		// leave other keys to fall through to list update
 	case newPokemon:
 		var cmds []tea.Cmd
 		if len(m.list.Items()) == 0 {
@@ -70,6 +71,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.list.StopSpinner()
 		return m, nil
 	default:
+		// fall through to list update
 	}
 	// propagate to the underlying list model
 	var cmd tea.Cmd
@@ -86,7 +88,7 @@ func (m model) View() string {
 	if m.list.IsFiltered() && selectedItem != nil {
 		sprite, err := selectedItem.(PokemonItem).inner.GetAsciiSprite(64)
 		if err != nil {
-            sprite = fmt.Sprintf("Error fetching sprite for Pokemon at %s: %s", selectedItem.(PokemonItem).inner.Url, err)
+			sprite = fmt.Sprintf("Error fetching sprite for Pokemon at %s: %s", selectedItem.(PokemonItem).inner.Url, err)
 		}
 		render = lipgloss.JoinHorizontal(lipgloss.Top, render, sprite)
 	}
