@@ -33,7 +33,7 @@ type PokemonResponse struct {
 // GetAllPokemon reads all available Pokémon from the pokeapi incrementally.
 // A GET on the url provided returns a list of results and a next URL to perform
 // another GET request on for another set of Pokémon.
-func GetAllPokemon() ([]Pokemon, error) {
+func GetAllPokemon(c chan []Pokemon) ([]Pokemon, error) {
 	url := "https://pokeapi.co/api/v2/pokemon"
 
 	pokemon := []Pokemon{}
@@ -50,10 +50,12 @@ func GetAllPokemon() ([]Pokemon, error) {
 			return []Pokemon{}, err
 		}
 
-		pokemon = append(pokemon, allPokemonResponse.Results...)
+		c <- allPokemonResponse.Results
 
 		url = allPokemonResponse.NextUrl
 	}
+
+	close(c)
 
 	return pokemon, nil
 }
