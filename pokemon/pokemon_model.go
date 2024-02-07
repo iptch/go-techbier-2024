@@ -33,16 +33,13 @@ func (m model) DownloadPokemon(p *tea.Program) {
 
 	go GetAllPokemon(c)
 
-	go func() {
-		// create list from Pokémon items
-		for downloadedPokemon := range c {
-			for _, pokemon := range downloadedPokemon {
-				p.Send(newPokemon{pokemon})
-			}
-		}
-
-		p.Send(downloadCompleted{})
-	}()
+    // create list from Pokémon items
+    for downloadedPokemon := range c {
+        for _, pokemon := range downloadedPokemon {
+            p.Send(newPokemon{pokemon})
+        }
+    }
+    p.Send(downloadCompleted{})
 }
 
 // Init is the first function that will be called. It returns an optional
