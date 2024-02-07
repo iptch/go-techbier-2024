@@ -11,9 +11,7 @@ import (
 // Define the model for our TUI. For any type to be a Model, it has to implement
 // the Model interface: https://pkg.go.dev/github.com/charmbracelet/bubbletea@v0.25.0#Model
 type model struct {
-	list              list.Model
-	error             error
-	downloadCompleted bool
+	list list.Model
 }
 
 // InitialModel instantiates a model with a spinner for the waiting screen,
@@ -60,13 +58,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		}
-	case errMsg:
-		m.error = msg
-		return m, tea.Quit
 	case newPokemon:
-		// convert to list items
 		var cmds []tea.Cmd
 		if len(m.list.Items()) == 0 {
+			// download has started
 			cmds = append(cmds, m.list.StartSpinner())
 		}
 		cmds = append(cmds, m.list.InsertItem(len(m.list.Items()), PokemonItem{&msg.pokemon}))
@@ -85,19 +80,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // View renders the program's UI, which is just a string. The view is
 // rendered after every Update.
 func (m model) View() string {
-	if m.error != nil {
-		return fmt.Sprintf("\nThere was an error in the application: %v\n\n", m.error)
-	}
-
 	render := m.list.View()
 
 	selectedItem := m.list.SelectedItem()
 	if m.list.IsFiltered() && selectedItem != nil {
-		sprite, err := selectedItem.(PokemonItem).inner.GetAsciiSprite(60)
+		sprite, err := selectedItem.(PokemonItem).inner.GetAsciiSprite(64)
 		if err != nil {
-			// set error and re-render
-			m.error = err
-			return m.View()
+            sprite = fmt.Sprintf("Error fetching sprite for Pokemon at %s: %s", selectedItem.(PokemonItem).inner.Url, err)
 		}
 		render = lipgloss.JoinHorizontal(lipgloss.Top, render, sprite)
 	}

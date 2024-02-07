@@ -2,7 +2,11 @@ package pokemon
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+
+	"github.com/tidwall/gjson"
 
 	"github.com/TheZoraiz/ascii-image-converter/aic_package"
 )
@@ -99,12 +103,25 @@ func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
 		return p.cachedSprite, nil
 	}
 
-	response, err := p.getResponse()
+	resp, err := http.Get(p.Url)
 	if err != nil {
 		return "", err
 	}
 
-	spritesUrl := response.Sprites["other"].(map[string]interface{})["official-artwork"].(map[string]interface{})["front_default"].(string)
+	json, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	if !gjson.ValidBytes(json) {
+		return "", fmt.Errorf("invalid json response")
+	}
+
+	spritesUrl, ok := gjson.GetBytes(json, "sprites.other.official-artwork.front_default").Value().(string)
+	if !ok {
+		return "", fmt.Errorf("invalid json value for sprite")
+	}
+	// spritesUrl := response.Sprites["other"].(map[string]interface{})["official-artwork"].(map[string]interface{})["front_default"].(string)
 
 	flags := aic_package.DefaultFlags()
 	flags.Width = width

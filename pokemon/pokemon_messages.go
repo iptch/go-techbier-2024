@@ -7,5 +7,3 @@ type downloadCompleted struct {
 type newPokemon struct {
 	pokemon Pokemon
 }
-
-type errMsg error
