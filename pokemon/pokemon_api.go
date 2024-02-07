@@ -35,21 +35,21 @@ type PokemonResponse struct {
 // GetAllPokemon reads all available Pokémon from the pokeapi incrementally.
 // A GET on the url provided returns a list of results and a next URL to perform
 // another GET request on for another set of Pokémon.
-func GetAllPokemon(c chan []Pokemon) ([]Pokemon, error) {
-	url := "https://pokeapi.co/api/v2/pokemon"
+func GetAllPokemon(c chan []Pokemon) error {
+	defer close(c)
 
-	pokemon := []Pokemon{}
+	url := "https://pokeapi.co/api/v2/pokemon"
 
 	for url != "" {
 		resp, err := http.Get(url)
 		if err != nil {
-			return []Pokemon{}, err
+			return err
 		}
 
 		var allPokemonResponse AllPokemonResponse
 		err = json.NewDecoder(resp.Body).Decode(&allPokemonResponse)
 		if err != nil {
-			return []Pokemon{}, err
+			return err
 		}
 
 		c <- allPokemonResponse.Results
@@ -57,9 +57,7 @@ func GetAllPokemon(c chan []Pokemon) ([]Pokemon, error) {
 		url = allPokemonResponse.NextUrl
 	}
 
-	close(c)
-
-	return pokemon, nil
+	return nil
 }
 
 func (p *Pokemon) getResponse() (PokemonResponse, error) {
