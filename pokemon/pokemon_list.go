@@ -1,23 +1,9 @@
 package pokemon
 
 import (
-	"github.com/charmbracelet/lipgloss"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
-
-func docStyle() lipgloss.Style {
-	return lipgloss.NewStyle().Margin(1, 2)
-}
-
-func otherStyle() lipgloss.Style {
-	return lipgloss.NewStyle().
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderTop(true).
-		BorderLeft(true).
-		BorderRight(true).
-		BorderBottom(true)
-}
 
 type PokemonItem struct {
 	inner *Pokemon
