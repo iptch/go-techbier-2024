@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/bubbles/list"
-	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -12,7 +11,6 @@ import (
 // Define the model for our TUI. For any type to be a Model, it has to implement
 // the Model interface: https://pkg.go.dev/github.com/charmbracelet/bubbletea@v0.25.0#Model
 type model struct {
-	spinner           spinner.Model
 	list              list.Model
 	error             error
 	downloadCompleted bool
@@ -21,19 +19,10 @@ type model struct {
 // InitialModel instantiates a model with a spinner for the waiting screen,
 // a list to hold all retrieved Pokemon items, the initial app and error states.
 func InitialModel() model {
-	s := spinner.New()
-	s.Spinner = spinner.Points
-	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("76"))
-
-	items := []list.Item{}
-	l := list.New(items, list.NewDefaultDelegate(), 50, 50)
+	l := list.New([]list.Item{}, list.NewDefaultDelegate(), 0, 0)
 	l.Title = "Pokédex by ipt"
 
-	return model{
-		spinner: s,
-		list:    l,
-		error:   nil,
-	}
+	return model{list: l}
 }
 
 // DownloadPokemon will call GetAllPokemon to retrieve Pokémon from the PokéAPI.
@@ -59,31 +48,34 @@ func (m model) DownloadPokemon(p *tea.Program) {
 // Init is the first function that will be called. It returns an optional
 // initial command. To not perform an initial command return nil.
 func (m model) Init() tea.Cmd {
-	return m.spinner.Tick
+	return tea.EnterAltScreen
 }
 
 // Update is called when a message is received. Use it to inspect messages
 // and, in response, update the model and/or send a command.
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.list.SetSize(msg.Width, msg.Height)
+		return m, nil
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		}
-	case spinner.TickMsg:
-		var cmd tea.Cmd
-		m.spinner, cmd = m.spinner.Update(msg)
-		return m, cmd
 	case errMsg:
 		m.error = msg
 		return m, tea.Quit
 	case newPokemon:
 		// convert to list items
-		cmd := m.list.InsertItem(len(m.list.Items()), PokemonItem{&msg.pokemon})
-		return m, cmd
+		var cmds []tea.Cmd
+		if len(m.list.Items()) == 0 {
+			cmds = append(cmds, m.list.StartSpinner())
+		}
+		cmds = append(cmds, m.list.InsertItem(len(m.list.Items()), PokemonItem{&msg.pokemon}))
+		return m, tea.Batch(cmds...)
 	case downloadCompleted:
-		m.downloadCompleted = true
+		m.list.StopSpinner()
 		return m, nil
 	default:
 	}
@@ -99,32 +91,19 @@ func (m model) View() string {
 	if m.error != nil {
 		return fmt.Sprintf("\nThere was an error in the application: %v\n\n", m.error)
 	}
-	if len(m.list.Items()) == 0 {
-		return "\nWelcome to ipt Pokédex!\n\n\nGetting Pokémon ...   " + m.spinner.View()
-	}
 
-	var sprite string
-	var err error
+	render := m.list.View()
 
 	selectedItem := m.list.SelectedItem()
 	if m.list.IsFiltered() && selectedItem != nil {
-		sprite, err = selectedItem.(PokemonItem).inner.GetAsciiSprite(60)
+		sprite, err := selectedItem.(PokemonItem).inner.GetAsciiSprite(60)
 		if err != nil {
+			// set error and re-render
 			m.error = err
-			return fmt.Sprintf("\nThere was an error in the application: %v\n\n", m.error)
+			return m.View()
 		}
+		render = lipgloss.JoinHorizontal(lipgloss.Top, render, sprite)
 	}
 
-	render := lipgloss.JoinHorizontal(lipgloss.Top,
-		docStyle().
-			Width(50).
-			Render(m.list.View()),
-		otherStyle().
-			Height(m.list.Height()).
-			Render(sprite))
-
-	if !m.downloadCompleted {
-		render = lipgloss.JoinVertical(lipgloss.Left, render, m.spinner.View())
-	}
 	return render
 }
