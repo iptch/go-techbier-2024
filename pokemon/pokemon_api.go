@@ -8,8 +8,10 @@ import (
 )
 
 type Pokemon struct {
-	Name string `json:"name"`
-	Url  string `json:"url"`
+	Name           string `json:"name"`
+	Url            string `json:"url"`
+	cachedResponse *PokemonResponse
+	cachedSprite   string
 }
 
 type PokemonType struct {
@@ -60,22 +62,26 @@ func GetAllPokemon(c chan []Pokemon) ([]Pokemon, error) {
 	return pokemon, nil
 }
 
-func (p Pokemon) getResponse() (PokemonResponse, error) {
+func (p *Pokemon) getResponse() (PokemonResponse, error) {
+	if p.cachedResponse != nil {
+		return *p.cachedResponse, nil
+	}
+
 	resp, err := http.Get(p.Url)
 	if err != nil {
 		return PokemonResponse{}, err
 	}
 
-	var pokemonResponse PokemonResponse
-	err = json.NewDecoder(resp.Body).Decode(&pokemonResponse)
+	p.cachedResponse = new(PokemonResponse)
+	err = json.NewDecoder(resp.Body).Decode(p.cachedResponse)
 	if err != nil {
 		return PokemonResponse{}, err
 	}
 
-	return pokemonResponse, nil
+	return *p.cachedResponse, nil
 }
 
-func (p Pokemon) GetTypes() ([]string, error) {
+func (p *Pokemon) GetTypes() ([]string, error) {
 	response, err := p.getResponse()
 	if err != nil {
 		return []string{}, err
@@ -90,7 +96,11 @@ func (p Pokemon) GetTypes() ([]string, error) {
 
 }
 
-func (p Pokemon) GetAsciiSprite(width int) (string, error) {
+func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
+	if p.cachedSprite != "" {
+		return p.cachedSprite, nil
+	}
+
 	response, err := p.getResponse()
 	if err != nil {
 		return "", err
@@ -102,5 +112,6 @@ func (p Pokemon) GetAsciiSprite(width int) (string, error) {
 	flags.Width = width
 	flags.Colored = true
 
-	return aic_package.Convert(spritesUrl, flags)
+	p.cachedSprite, err = aic_package.Convert(spritesUrl, flags)
+	return p.cachedSprite, err
 }

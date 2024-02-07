@@ -80,7 +80,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 	case newPokemon:
 		// convert to list items
-		cmd := m.list.InsertItem(len(m.list.Items()), PokemonItem{msg.pokemon})
+		cmd := m.list.InsertItem(len(m.list.Items()), PokemonItem{&msg.pokemon})
 		return m, cmd
 	case downloadCompleted:
 		m.downloadCompleted = true
@@ -107,7 +107,7 @@ func (m model) View() string {
 	var err error
 
 	selectedItem := m.list.SelectedItem()
-	if selectedItem != nil {
+	if m.list.IsFiltered() && selectedItem != nil {
 		sprite, err = selectedItem.(PokemonItem).inner.GetAsciiSprite(60)
 		if err != nil {
 			m.error = err

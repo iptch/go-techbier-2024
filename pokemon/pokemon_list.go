@@ -20,7 +20,7 @@ func otherStyle() lipgloss.Style {
 }
 
 type PokemonItem struct {
-	inner Pokemon
+	inner *Pokemon
 }
 
 func (i PokemonItem) Title() string {
