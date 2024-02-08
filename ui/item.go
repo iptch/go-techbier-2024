@@ -1,4 +1,4 @@
-package pokedex
+package ui
 
 import (
 	"strings"
