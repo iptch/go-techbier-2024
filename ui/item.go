@@ -1,15 +1,16 @@
-package pokemon
+package pokedex
 
 import (
 	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
+	"github.com/iptch/pokedex/pokeapi"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
 
 // a pokemon list item is a pokemon
-type PokemonItem PokemonResponse
+type PokemonItem pokeapi.Pokemon
 
 // check if type implements interface
 var _ list.Item = (*PokemonItem)(nil)

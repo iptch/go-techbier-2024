@@ -1,4 +1,4 @@
-package pokemon
+package pokeapi
 
 import (
 	"encoding/json"
@@ -11,11 +11,9 @@ import (
 	"github.com/TheZoraiz/ascii-image-converter/aic_package"
 )
 
-type Pokemon struct {
-	Name           string `json:"name"`
-	Url            string `json:"url"`
-	cachedResponse *PokemonResponse
-	cachedSprite   string
+type PokemonRef struct {
+	Name string `json:"name"`
+	Url  string `json:"url"`
 }
 
 type PokemonType struct {
@@ -23,12 +21,12 @@ type PokemonType struct {
 	Url  string `json:"url"`
 }
 
-type AllPokemonResponse struct {
-	Results []Pokemon `json:"results"`
-	NextUrl string    `json:"next"`
+type PokemonList struct {
+	Results []PokemonRef `json:"results"`
+	NextUrl string       `json:"next"`
 }
 
-type PokemonResponse struct {
+type Pokemon struct {
 	Name  string `json:"name"`
 	Types []struct {
 		Slot int         `json:"slot"`
@@ -39,7 +37,7 @@ type PokemonResponse struct {
 // GetAllPokemon reads all available Pokémon from the pokeapi incrementally.
 // A GET on the url provided returns a list of results and a next URL to perform
 // another GET request on for another set of Pokémon.
-func GetAllPokemon(c chan []Pokemon) error {
+func GetAllPokemon(c chan []PokemonRef) error {
 	defer close(c)
 
 	url := "https://pokeapi.co/api/v2/pokemon"
@@ -51,60 +49,37 @@ func GetAllPokemon(c chan []Pokemon) error {
 		}
 		defer resp.Body.Close()
 
-		var allPokemonResponse AllPokemonResponse
-		err = json.NewDecoder(resp.Body).Decode(&allPokemonResponse)
+		var pokemonList PokemonList
+		err = json.NewDecoder(resp.Body).Decode(&pokemonList)
 		if err != nil {
 			return err
 		}
 
-		c <- allPokemonResponse.Results
+		c <- pokemonList.Results
 
-		url = allPokemonResponse.NextUrl
+		url = pokemonList.NextUrl
 	}
 
 	return nil
 }
 
-func (p *Pokemon) getResponse() (PokemonResponse, error) {
-	if p.cachedResponse != nil {
-		return *p.cachedResponse, nil
-	}
-
+func (p *PokemonRef) Get() (Pokemon, error) {
 	resp, err := http.Get(p.Url)
 	if err != nil {
-		return PokemonResponse{}, err
+		return Pokemon{}, err
 	}
 	defer resp.Body.Close()
 
-	p.cachedResponse = new(PokemonResponse)
-	err = json.NewDecoder(resp.Body).Decode(p.cachedResponse)
+	var pokemon Pokemon
+	err = json.NewDecoder(resp.Body).Decode(&pokemon)
 	if err != nil {
-		return PokemonResponse{}, err
+		return Pokemon{}, err
 	}
 
-	return *p.cachedResponse, nil
+	return pokemon, nil
 }
 
-func (p *Pokemon) GetTypes() ([]string, error) {
-	response, err := p.getResponse()
-	if err != nil {
-		return []string{}, err
-	}
-
-	types := []string{}
-	for _, type_ := range response.Types {
-		types = append(types, type_.Type.Name)
-	}
-
-	return types, nil
-
-}
-
-func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
-	if p.cachedSprite != "" {
-		return p.cachedSprite, nil
-	}
-
+func (p *PokemonRef) GetAsciiSprite(width int) (string, error) {
 	resp, err := http.Get(p.Url)
 	if err != nil {
 		return "", err
@@ -130,6 +105,5 @@ func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
 	flags.Width = width
 	flags.Colored = true
 
-	p.cachedSprite, err = aic_package.Convert(spritesUrl, flags)
-	return p.cachedSprite, err
+	return aic_package.Convert(spritesUrl, flags)
 }

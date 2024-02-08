@@ -1,4 +1,4 @@
-package pokemon
+package pokedex
 
 import (
 	"github.com/charmbracelet/bubbles/list"
@@ -22,26 +22,6 @@ func InitialModel() model {
 	return model{list: l}
 }
 
-// DownloadPokemon will call GetAllPokemon to retrieve Pokémon from the PokéAPI.
-// Once the download has completed it sends a downloadCompleted message to the
-// bubbles Program.
-func (m model) DownloadPokemon(p *tea.Program) {
-	c := make(chan []Pokemon)
-
-	go GetAllPokemon(c)
-
-	// create list from Pokémon items
-	for downloadedPokemon := range c {
-		for _, pokemon := range downloadedPokemon {
-			response, err := pokemon.getResponse()
-			if err == nil {
-				p.Send(newPokemon{&response})
-			}
-		}
-	}
-	p.Send(downloadCompleted{})
-}
-
 // Init is the first function that will be called. It returns an optional
 // initial command. To not perform an initial command return nil.
 func (m model) Init() tea.Cmd {
@@ -61,15 +41,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 		// leave other keys to fall through to list update
-	case newPokemon:
+	case NewPokemon:
 		var cmds []tea.Cmd
 		if len(m.list.Items()) == 0 {
 			// download has started
 			cmds = append(cmds, m.list.StartSpinner())
 		}
-		cmds = append(cmds, m.list.InsertItem(len(m.list.Items()), (*PokemonItem)(msg.pokemon)))
+		cmds = append(cmds, m.list.InsertItem(len(m.list.Items()), (*PokemonItem)(msg.Pokemon)))
 		return m, tea.Batch(cmds...)
-	case downloadCompleted:
+	case DownloadCompleted:
 		m.list.StopSpinner()
 		return m, nil
 	default:
