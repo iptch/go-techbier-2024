@@ -37,10 +37,8 @@ func DownloadPokemon(p *tea.Program) {
 	// create list from Pokémon items
 	for pokemonRefs := range c {
 		for _, pokemonRef := range pokemonRefs {
-			response, err := pokemonRef.Get()
-			if err == nil {
-				p.Send(ui.NewPokemon{Pokemon: &response})
-			}
+			pokemonRef := pokemonRef
+			p.Send(ui.NewPokemon{Pokemon: &pokemonRef})
 		}
 	}
 	p.Send(ui.DownloadCompleted{})

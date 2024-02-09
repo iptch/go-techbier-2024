@@ -16,6 +16,16 @@ type PokemonRef struct {
 	Url  string `json:"url"`
 }
 
+type Stat struct {
+	GameIndex int `json:"game_index"`
+	ID        int `json:"id"`
+}
+
+type PokeapiRef[T any] struct {
+	Name string `json:"name"`
+	Url  string `json:"url"`
+}
+
 type PokemonType struct {
 	Name string `json:"name"`
 	Url  string `json:"url"`
@@ -32,6 +42,10 @@ type Pokemon struct {
 		Slot int         `json:"slot"`
 		Type PokemonType `json:"type"`
 	} `json:"types"`
+	Stats []struct {
+		BaseStat int              `json:"base_stat"`
+		Stat     PokeapiRef[Stat] `json:"stat"`
+	} `json:"stats"`
 }
 
 // GetAllPokemon reads all available Pokémon from the pokeapi incrementally.
@@ -77,6 +91,22 @@ func (p *PokemonRef) Get() (Pokemon, error) {
 	}
 
 	return pokemon, nil
+}
+
+func (p *PokeapiRef[T]) Get() (*T, error) {
+	resp, err := http.Get(p.Url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var pokemon T
+	err = json.NewDecoder(resp.Body).Decode(&pokemon)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pokemon, nil
 }
 
 func (p *PokemonRef) GetAsciiSprite(width int) (string, error) {

@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"strings"
-
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/iptch/pokedex/pokeapi"
 	"golang.org/x/text/cases"
@@ -10,7 +8,7 @@ import (
 )
 
 // a pokemon list item is a pokemon
-type PokemonItem pokeapi.Pokemon
+type PokemonItem pokeapi.PokemonRef
 
 // check if type implements interface
 var _ list.Item = (*PokemonItem)(nil)
@@ -20,11 +18,7 @@ func (i *PokemonItem) Title() string {
 }
 
 func (i *PokemonItem) Description() string {
-	types := make([]string, 0, len(i.Types))
-	for _, type_ := range i.Types {
-		types = append(types, type_.Type.Name)
-	}
-	return strings.Join(types, ", ")
+	return ""
 }
 
 func (i *PokemonItem) FilterValue() string { return i.Name }
