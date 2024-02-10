@@ -30,6 +30,7 @@ func InitialModel() model {
 			),
 		}
 	}
+	l.AdditionalFullHelpKeys = l.AdditionalShortHelpKeys
 
 	return model{list: l}
 }
