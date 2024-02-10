@@ -9,10 +9,6 @@ import (
 	"github.com/iptch/pokedex/ui"
 )
 
-// TODO(@Zak): What do you think about keeping the main.go file really lean?
-// Also, the code is already getting a bit elaborate at this point. We should sync
-// and see how we will present the code to the group such that it is easily
-// understandable, would you agree?
 func main() {
 	model := ui.InitialModel()
 	program := tea.NewProgram(model, tea.WithAltScreen())

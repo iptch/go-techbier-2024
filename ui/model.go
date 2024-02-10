@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/iptch/pokedex/pokeapi"
@@ -21,6 +22,14 @@ func InitialModel() model {
 
 	l := list.New([]list.Item{}, delegate, 0, 0)
 	l.Title = "Pokédex by ipt"
+	l.AdditionalShortHelpKeys = func() []key.Binding {
+		return []key.Binding{
+			key.NewBinding(
+				key.WithKeys("space"),
+				key.WithHelp("space", "toggle details"),
+			),
+		}
+	}
 
 	return model{list: l}
 }
@@ -51,19 +60,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.list.FilterState() != list.Filtering {
 				return m, tea.Quit
 			}
-		case "enter":
+		case " ":
 			if m.list.FilterState() != list.Filtering {
-				m.fullscreen = true
-				return m, nil
-			}
-		case "esc":
-			if m.fullscreen {
-				m.fullscreen = false
-				// consume escape
+				m.fullscreen = !m.fullscreen
 				return m, nil
 			}
 		}
-		// leave other keys to fall through to list update
+
+	// leave other keys to fall through to list update
 	case NewPokemon:
 		var cmds []tea.Cmd
 		if len(m.list.Items()) == 0 {
