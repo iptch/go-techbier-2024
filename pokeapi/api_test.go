@@ -6,7 +6,7 @@ import (
 
 const dittoUrl = "https://pokeapi.co/api/v2/pokemon/ditto"
 
-func TestAscii(t *testing.T) {
+func TestSpriteUrl(t *testing.T) {
 	pokemonRef := PokeapiRef[Pokemon]{Url: dittoUrl}
 	pokemon, err := pokemonRef.Get()
 	if err != nil {
