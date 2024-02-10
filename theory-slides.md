@@ -18,6 +18,7 @@ Presented by Zak Cook & Selim Kälin
 - References and Pointers
 - Control Structures
 - Imports
+- Dealing with JSON
 - Standard Library
 - Go Management Tools
 
@@ -329,6 +330,36 @@ import java.util.*;
 import java.util.ArrayList;
 ```
 
+---
+
+## Dealing with JSON
+
+- Go is widely used in web and cloud technology, where formats such as JSON and YAML are omnipresent
+- The standard library has some helpful tools in `encoding/json` 
+
+```go
+package main
+
+import "encoding/json"
+
+type Consultant struct {
+    Name      string  `json:"name" yaml:"name"`
+    Age       int     `json:"age" yaml:"age"`
+    Project   string  `json:"project" yaml:"project"`
+}
+
+func main() {
+    // Struct -> JSON
+    writeConsultant := Consultant{Name: "Felix Grüne", Age: 42, Project: "Unknown"}
+    jsonData, err := json.Marshal(writeConsultant)
+    // Handle error
+
+    // JSON -> Struct
+    var readConsultant Consultant
+    err = json.Unmarshal(jsonData, &readConsultant)
+    // Handle error
+}
+```
 ---
 
 ## Standard Library
