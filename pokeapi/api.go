@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/TheZoraiz/ascii-image-converter/aic_package"
 )
 
 type PokeapiRef[T any] struct {
@@ -117,9 +115,21 @@ func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
 		return "", err
 	}
 
-	flags := aic_package.DefaultFlags()
-	flags.Width = width
-	flags.Colored = true
+	// ### Task 3 ###
+	//
+	// We need to convert the Pokemon sprites into ASCII art. We will use the
+	// package github.com/TheZoraiz/ascii-image-converter/aic_package.
+	//
+	// Add the necessary import statements at the top of the file and use the
+	// imported package to create an ASCII sprite for our Pokédex.
+	//
+	// Hint: you will need to use a function from the aic_package called DefaultFlags().
+	// On the return type from that function call, you will set a couple of fields, called
+	// Width and Colored. Where do we get the width from? Do we want the sprite to be
+	// colored?
+	// Finally, wou will need a second function from the imported package, called Convert().
+	// Make sure you adjust the return statement correctly.
 
-	return aic_package.Convert(spriteUrl, flags)
+	return spriteUrl, fmt.Errorf("not implemented yet")
+
 }
