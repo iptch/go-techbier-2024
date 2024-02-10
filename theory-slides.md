@@ -77,25 +77,25 @@ About Go ...
 Syntax
 
 ```go
-// Comments start with two backslashes like so
-// Variable declaration follows snakeCase syntax
-var x int
-var isTrue, isFalse bool
-var (
+var x int  // Comments start with two slashes, like so
+var isTrue, isFalse bool  // Variable declaration follows snakeCase syntax
+var (  // Declaration blocks are delimited by parantheses
     unsignedInteger uint8
     someFloat       float64
     myFirstString   string 
 )
 
-// Variable definition
-x = 5
+x = 5  // Variable definition, x has to be declared previously
 var (
     isTrue  bool = true
     isFalse bool = false
 )
 
-// Short syntax, type is inferred 
-hello := "World"
+hello := "World"  // Short syntax, type is inferred 
+```
+```java
+// Compare this to Java
+int myInt = 10;
 ```
 
 ---
@@ -104,23 +104,27 @@ Syntax
 
 ```go
 // Everything in go belongs to a package
-package main
+package main  
+// Java: package ch.ipt.ch;
 
-// Objects starting with lowercase letters are NOT exported to other packages
-numberInMainPackage := 42
+// Lowercase letter objects are NOT exported to other packages
+numberInMainPackage := 42  
+// Java: private int numberInMainPackage = 42;  
 
 // Uppercase names are exported
-AvailableInOtherPackages := "Interpackagenal string"
+ExportedString := "Interpackagenal string"  
+// Java: public String publicString = "You get the point";
 
 // Constants are declared like so
-const Pi float64 = 3.1415926
+const Pi float64 = 3.1415926  
+// Java: static final float PI = 3.1415926
 ```
 
 ---
 
 ## Structs 
 
-Structs are a sequence of named elements, called fields:
+Structs are a sequence of named elements, called fields (similar to classes in Java):
 
 ```go
 // Empty struct
@@ -155,14 +159,37 @@ To distinguish between functions and methods in Go, we have to look at the conte
   - like a function but contains a receiver, which specifies what type the method belongs to
   - receiver can be any type, but in most cases it is a struct or pointer to a struct
 
+---
+
+## Function and Methods Syntax
+
 Syntax:
 ```go
 // Exported function with no return value
 func SayHello() {
     fmt.Println("Hello!")
 }
+```
 
-// Unexported method with a return value
+```java
+// Apparently in Java, everything must be a class ... 
+public class Hello {
+  void sayHello() {
+    System.out.println("Hello!"); 
+  }
+
+  public static void main(String[] args) {
+    sayHello();
+  }
+}
+```
+
+---
+
+## Method Syntax
+
+```go 
+// Unexported method with a return value, c Consultant is the receiver object
 func (c Consultant) getAhvNumber() ahvNumber {
     return c.ahvNumber
 }
@@ -175,7 +202,8 @@ func (c Consultant) getAhvNumber() ahvNumber {
 Interfaces specify a list of methods. A type set defined by an interface is the type set that implements all of those methods.
 
 > **IMPORTANT**
-> In go, interfaces are implemented **implicitly**! There is no explicit declaration of intent, such as the keyword `implements`.
+> In go, interfaces are implemented **implicitly**! 
+> There is no explicit declaration of intent, such as the keyword `implements`.
 
 Syntax:
 
@@ -281,6 +309,7 @@ for index, value := range someCollection {
 
 - As stated previously, everything in Go belongs to a package, declared by the keyword `package`
 - Packages are imported using the `import` statement at the beginning of a file
+- Imports apply to the entire package, all exported identifiers will become available
 - Package management is awesome! Look at the following example:
 
 ```go
@@ -293,7 +322,11 @@ import (
     http "net/http"                         // Create an alias called http
     "github.com/charmbracelet/bubbles/list" // External package we will need
 )
-
+```
+```java
+// Java
+import java.util.*;
+import java.util.ArrayList;
 ```
 
 ---
