@@ -88,8 +88,13 @@ func (p *Pokemon) GetSpriteUrl() (string, error) {
 	spritesMap := p.Sprites
 
 	var spritesUrl string
-	for i, key := range keys {
-		value, ok := spritesMap[key]
+	// ### Task 3 ###
+	// You will need to use the index returned by `range`, so replace the placeholder
+	for _, key := range keys {
+
+		// ### Task 3 ###
+		// You will need to use the value from spritesMap, so replace the placeholder
+		_, ok := spritesMap[key]
 		if !ok {
 			return "", fmt.Errorf("key not found: %s", key)
 		}
