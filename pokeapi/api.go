@@ -3,23 +3,10 @@ package pokeapi
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
-
-	"github.com/tidwall/gjson"
 
 	"github.com/TheZoraiz/ascii-image-converter/aic_package"
 )
-
-type PokemonRef struct {
-	Name string `json:"name"`
-	Url  string `json:"url"`
-}
-
-type Stat struct {
-	GameIndex int `json:"game_index"`
-	ID        int `json:"id"`
-}
 
 type PokeapiRef[T any] struct {
 	Name string `json:"name"`
@@ -32,8 +19,8 @@ type PokemonType struct {
 }
 
 type PokemonList struct {
-	Results []PokemonRef `json:"results"`
-	NextUrl string       `json:"next"`
+	Results []PokeapiRef[Pokemon] `json:"results"`
+	NextUrl string                `json:"next"`
 }
 
 type Pokemon struct {
@@ -43,15 +30,16 @@ type Pokemon struct {
 		Type PokemonType `json:"type"`
 	} `json:"types"`
 	Stats []struct {
-		BaseStat int              `json:"base_stat"`
-		Stat     PokeapiRef[Stat] `json:"stat"`
+		BaseStat int                  `json:"base_stat"`
+		Stat     PokeapiRef[struct{}] `json:"stat"`
 	} `json:"stats"`
+	Sprites map[string]interface{} `json:"sprites"`
 }
 
 // GetAllPokemon reads all available Pokémon from the pokeapi incrementally.
 // A GET on the url provided returns a list of results and a next URL to perform
 // another GET request on for another set of Pokémon.
-func GetAllPokemon(c chan []PokemonRef) error {
+func GetAllPokemon(c chan []PokeapiRef[Pokemon]) error {
 	defer close(c)
 
 	url := "https://pokeapi.co/api/v2/pokemon"
@@ -77,23 +65,7 @@ func GetAllPokemon(c chan []PokemonRef) error {
 	return nil
 }
 
-func (p *PokemonRef) Get() (Pokemon, error) {
-	resp, err := http.Get(p.Url)
-	if err != nil {
-		return Pokemon{}, err
-	}
-	defer resp.Body.Close()
-
-	var pokemon Pokemon
-	err = json.NewDecoder(resp.Body).Decode(&pokemon)
-	if err != nil {
-		return Pokemon{}, err
-	}
-
-	return pokemon, nil
-}
-
-func (p *PokeapiRef[T]) Get() (*T, error) {
+func (p PokeapiRef[T]) Get() (*T, error) {
 	resp, err := http.Get(p.Url)
 	if err != nil {
 		return nil, err
@@ -108,32 +80,42 @@ func (p *PokeapiRef[T]) Get() (*T, error) {
 
 	return &pokemon, nil
 }
+func (p *Pokemon) GetSpriteUrl() (string, error) {
+	keys := []string{"other", "official-artwork", "front_default"}
 
-func (p *PokemonRef) GetAsciiSprite(width int) (string, error) {
-	resp, err := http.Get(p.Url)
+	spritesMap := p.Sprites
+
+	var spritesUrl string
+	for i, key := range keys {
+		value, ok := spritesMap[key]
+		if !ok {
+			return "", fmt.Errorf("key not found: %s", key)
+		}
+		if i != len(keys)-1 {
+			spritesMap, ok = value.(map[string]any)
+			if !ok {
+				return "", fmt.Errorf("expected map")
+			}
+		} else {
+			spritesUrl, ok = value.(string)
+			if !ok {
+				return "", fmt.Errorf("expected string")
+			}
+		}
+	}
+
+	return spritesUrl, nil
+}
+
+func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
+	spriteUrl, err := p.GetSpriteUrl()
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
-
-	json, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	if !gjson.ValidBytes(json) {
-		return "", fmt.Errorf("invalid json body")
-	}
-
-	spritesUrl, ok := gjson.GetBytes(json, "sprites.other.official-artwork.front_default").Value().(string)
-	if !ok {
-		return "", fmt.Errorf("invalid json value for sprite")
-	}
-	// spritesUrl := response.Sprites["other"].(map[string]interface{})["official-artwork"].(map[string]interface{})["front_default"].(string)
 
 	flags := aic_package.DefaultFlags()
 	flags.Width = width
 	flags.Colored = true
 
-	return aic_package.Convert(spritesUrl, flags)
+	return aic_package.Convert(spriteUrl, flags)
 }

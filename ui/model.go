@@ -12,7 +12,7 @@ import (
 // the Model interface: https://pkg.go.dev/github.com/charmbracelet/bubbletea@v0.25.0#Model
 type model struct {
 	list    list.Model
-	pokemon *pokeapi.PokemonRef
+	pokemon *pokeapi.PokeapiRef[pokeapi.Pokemon]
 }
 
 // InitialModel instantiates a model with a spinner for the waiting screen,
@@ -50,7 +50,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			if m.list.FilterState() != list.Filtering {
-				m.pokemon = (*pokeapi.PokemonRef)(m.list.SelectedItem().(*PokemonItem))
+				m.pokemon = (*pokeapi.PokeapiRef[pokeapi.Pokemon])(m.list.SelectedItem().(*PokemonItem))
 				return m, nil
 			}
 		case "esc":

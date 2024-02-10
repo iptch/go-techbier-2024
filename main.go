@@ -30,7 +30,7 @@ func main() {
 // Once the download has completed it sends a downloadCompleted message to the
 // bubbles Program.
 func DownloadPokemon(p *tea.Program) {
-	c := make(chan []pokeapi.PokemonRef)
+	c := make(chan []pokeapi.PokeapiRef[pokeapi.Pokemon])
 
 	go pokeapi.GetAllPokemon(c)
 

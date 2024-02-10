@@ -39,7 +39,12 @@ func getTypeColor(typeName string) lipgloss.Color {
 	return typeColor
 }
 
-func buildViewport(pokemon pokeapi.PokemonRef, height, width int) string {
+func buildViewport(pokemonRef pokeapi.PokeapiRef[pokeapi.Pokemon], height, width int) string {
+	pokemon, err := pokemonRef.Get()
+	if err != nil {
+		return fmt.Sprintf("Error fetching Pokemon: %s", err)
+	}
+
 	spriteWidth := 2 * width / 5
 	var spriteSection string
 	if sprite, err := pokemon.GetAsciiSprite(spriteWidth); err != nil {
@@ -48,14 +53,9 @@ func buildViewport(pokemon pokeapi.PokemonRef, height, width int) string {
 		spriteSection = sprite
 	}
 
-	response, err := pokemon.Get()
-	if err != nil {
-		return fmt.Sprintf("Error fetching Pokemon: %s", err)
-	}
-
 	var descriptionSection string
 	descriptionSection += "\n"
-	for _, type_ := range response.Types {
+	for _, type_ := range pokemon.Types {
 		typeName := type_.Type.Name
 		descriptionSection += textStyle().
 			Foreground(getTypeColor(typeName)).
@@ -66,7 +66,7 @@ func buildViewport(pokemon pokeapi.PokemonRef, height, width int) string {
 	progressBar := progress.New(progress.WithDefaultGradient())
 	progressBar.PercentFormat = " %.f "
 
-	for _, stat := range response.Stats {
+	for _, stat := range pokemon.Stats {
 		descriptionSection += progressBar.ViewAs(float64(stat.BaseStat) / 100.0)
 		descriptionSection += textStyle().Render(strings.ToUpper(strings.ReplaceAll(stat.Stat.Name, "-", " ")))
 		descriptionSection += "\n"

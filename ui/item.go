@@ -8,7 +8,7 @@ import (
 )
 
 // a pokemon list item is a pokemon
-type PokemonItem pokeapi.PokemonRef
+type PokemonItem pokeapi.PokeapiRef[pokeapi.Pokemon]
 
 // check if type implements interface
 var _ list.Item = (*PokemonItem)(nil)
