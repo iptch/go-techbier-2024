@@ -11,16 +11,26 @@ Presented by Zak Cook & Selim Kälin
 # Agenda
 
 - Go Basics
-- Standard Types and Syntax
-- Structs 
-- Functions and Methods
-- Interfaces
-- References and Pointers
-- Control Structures
-- Imports
-- Dealing with JSON
 - Standard Library
+- Standard Types and Syntax
+- Arrays, Slices, Maps
+- Structs 
+- References and Pointers
+- Functions and Methods
+- Control Structures
+- Dealing with JSON
+
+**You are up!**
+
+- Interfaces
+
+**You are up!**
+
+- Imports
 - Go Management Tools
+
+**You are up!**
+
 
 ---
 
@@ -60,6 +70,14 @@ About Go ...
 
 ---
 
+## Standard Library
+
+- Go features a powerful and extensive standard library
+- It covers areas such as I/O operations, text and image processing, cryptography, network programming, etc.
+- You can find an overview here: https://pkg.go.dev/std
+
+---
+
 ## Standard Types and Syntax
 
 - the full language specification can be found at https://go.dev/ref/spec
@@ -75,7 +93,7 @@ About Go ...
 
 ---
 
-Syntax
+## Declaration and Definition Syntax Basics
 
 ```go
 var x int  // Comments start with two slashes, like so
@@ -101,7 +119,7 @@ int myInt = 10;
 
 ---
 
-Syntax
+## Packages, Exports, and Constants Syntax Basics
 
 ```go
 // Everything in go belongs to a package
@@ -119,6 +137,30 @@ ExportedString := "Interpackagenal string"
 // Constants are declared like so
 const Pi float64 = 3.1415926  
 // Java: static final float PI = 3.1415926
+```
+
+---
+
+## Arrays, Slices, Maps
+
+```go
+// Arrays have a fixed size
+var myFirstArray [10]int
+myFirstArray[4] = 7
+
+mySecondArray := [3]int{1, 2, 3}
+
+// Slices are dynamic
+var myFirstSlice = []float64
+myFirstSlice = append(myFirstSlice, 2.9)
+
+mySecondSlice := []float64{1.0, 2.0, 3.0}
+
+// Maps are similar to hashes or dictionaries
+var myFirstMap map[string]string
+myFirstMap["one"] = "two"
+
+mySecondMap := map[int]string{1: "one", 2: "two"}
 ```
 
 ---
@@ -149,6 +191,35 @@ type Consultant struct {
 
 ---
 
+## Pointers and References 
+
+Pointers are declared using the `*<variable>` syntax. Similarly, to pass a reference to a variable, we use the syntax `&<variable>`.
+
+```go
+package main
+
+import "fmt"
+
+func incrementByValue(x int) {
+    x = x + 1 
+}
+
+func incrementByReference(x *int) {
+    *x = *x + 1
+}
+
+func main() {
+    myValue := 5
+    incrementByValue(a)
+    fmt.Println(a)            // Output: 5
+
+    incrementByReference(&a)
+    fmt.Println(a)            // Output: 6
+}
+```
+
+---
+
 ## Functions and Methods
 
 To distinguish between functions and methods in Go, we have to look at the context in which they are defined:
@@ -162,9 +233,8 @@ To distinguish between functions and methods in Go, we have to look at the conte
 
 ---
 
-## Function and Methods Syntax
+## Function Syntax
 
-Syntax:
 ```go
 // Exported function with no return value
 func SayHello() {
@@ -193,62 +263,6 @@ public class Hello {
 // Unexported method with a return value, c Consultant is the receiver object
 func (c Consultant) getAhvNumber() ahvNumber {
     return c.ahvNumber
-}
-```
-
----
-
-## Interfaces 
-
-Interfaces specify a list of methods. A type set defined by an interface is the type set that implements all of those methods.
-
-> **IMPORTANT**
-> In go, interfaces are implemented **implicitly**! 
-> There is no explicit declaration of intent, such as the keyword `implements`.
-
-Syntax:
-
-```go
-// If it quacks like a duck it is a duck
-type Duck interface {
-    Quack()
-}
-
-type Goose struct {}
-
-// Oops, I guess a goose is a duck
-func (g Goose) Quack() {
-    fmt.Println("Quack!")
-}
-
-```
-
----
-
-## Pointers and References
-
-Pointers are declared using the `*<variable>` syntax. Similarly, to pass a reference to a variable, we use the syntax `&<variable>`.
-
-```go
-package main
-
-import "fmt"
-
-func incrementByValue(x int) {
-    x = x + 1 
-}
-
-func incrementByReference(x *int) {
-    *x = *x + 1
-}
-
-func main() {
-    myValue := 5
-    incrementByValue(a)
-    fmt.Println(a)            // Output: 5
-
-    incrementByReference(&a)
-    fmt.Println(a)            // Output: 6
 }
 ```
 
@@ -306,32 +320,6 @@ for index, value := range someCollection {
 
 ---
 
-## Import Statements
-
-- As stated previously, everything in Go belongs to a package, declared by the keyword `package`
-- Packages are imported using the `import` statement at the beginning of a file
-- Imports apply to the entire package, all exported identifiers will become available
-- Package management is awesome! Look at the following example:
-
-```go
-package main
-
-// Let's import multiple packages at once
-import (
-    "fmt"                                   // Standard library
-    "math"                                  // Standard library
-    http "net/http"                         // Create an alias called http
-    "github.com/charmbracelet/bubbles/list" // External package we will need
-)
-```
-```java
-// Java
-import java.util.*;
-import java.util.ArrayList;
-```
-
----
-
 ## Dealing with JSON
 
 - Go is widely used in web and cloud technology, where formats such as JSON and YAML are omnipresent
@@ -360,21 +348,106 @@ func main() {
     // Handle error
 }
 ```
----
-
-## Standard Library
-
-- Go features a powerful and extensive standard library
-- It covers areas such as I/O operations, text and image processing, cryptography, network programming, etc.
-- You can find an overview here: https://pkg.go.dev/std
 
 ---
+
+## Task 1
+
+**Now you are up!**
+
+Open our git repository and check out the branch `tasks/1`.  
+Look around the project and check out the file `tbd`.  
+You will find instructions in the code.
+
+---
+
+## Interfaces 
+
+Interfaces specify a list of methods. A type set defined by an interface is the type set that implements all of those methods.
+
+> **IMPORTANT**
+> In go, interfaces are implemented **implicitly**! 
+> There is no explicit declaration of intent, such as the keyword `implements`.
+
+Syntax:
+
+```go
+// If it quacks like a duck it is a duck
+type Duck interface {
+    Quack()
+}
+
+type Goose struct {}
+
+// Oops, I guess a goose is a duck
+func (g Goose) Quack() {
+    fmt.Println("Quack!")
+}
+
+```
+
+---
+
+## Task 2
+
+**Now you are up!**
+
+Open our git repository and check out the branch `tasks/2`.  
+Look around the project and check out the file `tbd`.  
+You will find instructions in the code.
+
+---
+
+## Import Statements
+
+- As stated previously, everything in Go belongs to a package, declared by the keyword `package`
+- Packages are imported using the `import` statement at the beginning of a file
+- Imports apply to the entire package, all exported identifiers will become available
+- Package management is awesome! Look at the following example:
+
+```go
+package main
+
+// Let's import multiple packages at once
+import (
+    "fmt"                                   // Standard library
+    "math"                                  // Standard library
+    http "net/http"                         // Create an alias called http
+    "github.com/charmbracelet/bubbles/list" // External package we will need
+)
+```
+```java
+// Java
+import java.util.*;
+import java.util.ArrayList;
+```
+
+---
+
 ## Go Management Tools
 
 - Just like its package management, Go offers very capable management tools
   - `go fmt` for code formatting
   - `go mod`, `go get`, and `go install` for module and dependency management
   - `go test` for testing
+
+---
+
+## Task 3
+
+**Now you are up!**
+
+Open our git repository and check out the branch `tasks/3`.  
+Look around the project and check out the file `tbd`.  
+You will find instructions in the code.
+
+---
+
+## Bonus Tasks
+
+Wow! You have come a long ways. 
+
+If you are still wanting to play around more, have a look at the branch `tasks/bonus`.
 
 ---
 
