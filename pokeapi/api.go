@@ -93,17 +93,25 @@ func (p *Pokemon) GetSpriteUrl() (string, error) {
 		if !ok {
 			return "", fmt.Errorf("key not found: %s", key)
 		}
-		if i != len(keys)-1 {
-			spritesMap, ok = value.(map[string]any)
-			if !ok {
-				return "", fmt.Errorf("expected map")
-			}
-		} else {
-			spritesUrl, ok = value.(string)
-			if !ok {
-				return "", fmt.Errorf("expected string")
-			}
-		}
+
+		// ### Task 3 ###
+		// To understand what we are doing here, you might want to check out the response
+		// from pokeapi when making a request for a Pokémon: https://pokeapi.co/
+		//
+		// There are different sprites for every Pokémon, but we want to get the default front.
+		// The keys above help us in traversing the response structure to find the right sprite.
+		// Basically, the URL we are looking for is nested in:
+		// sprites > other > official-artwork > front_default
+		// In our traversal of this structure, we need to check that the response actually included
+		// what we expect it to, since any of the above parts might be missing.
+		//
+		// Implement some type assertions for the following:
+		//   1. Check if we have reached the end of the keys slice yet
+		//   2. If not, check whether the current value is of type map[string]any and update spritesMap
+		//  	  with the value for the next iteration, return an error if anything goes wrong
+		//   3. If yes, assert that the value is of type string and set our spritesUrl accordingly,
+		//      return an error if anything goes wrong
+
 	}
 
 	return spritesUrl, nil
