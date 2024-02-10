@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
+	// ### Task 3 ###
+	// We import the aic_package from Github. It is a convention
+	// to leave an empty line between imports from the standard
+	// library and those not belonging to the standard library.
 	"github.com/TheZoraiz/ascii-image-converter/aic_package"
 )
 
@@ -117,9 +121,27 @@ func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
 		return "", err
 	}
 
+	// ### Task 3 ###
+	// With the package imported, we can investigate what we would use
+	// DefaultFlags() for. We add a call to the function by prefixing
+	// the function name with the package name.
 	flags := aic_package.DefaultFlags()
+
+	// ### Task 3 ###
+	// The return type is a Flags struct. Our task was to set two fields
+	// on the struct: Width and Colored. We get the width through the
+	// function parameters. Whether you want the sprite to be colored or
+	// not is personal preference, so you may choose whatever you prefer.
+	// We like colors.
 	flags.Width = width
 	flags.Colored = true
 
+	// ### Task 3 ###
+	// Instead of returning an error stating that this function is not
+	// implemented, we can now convert the ASCII art sprite. The hint
+	// mentioned using a function called Convert(). We do not have to
+	// assign a variable to the function but can return its output right
+	// away. It takes the URL to our sprite and the previously set flags
+	// and returns our ASCII art sprite.
 	return aic_package.Convert(spriteUrl, flags)
 }
