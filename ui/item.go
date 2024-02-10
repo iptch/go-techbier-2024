@@ -8,6 +8,9 @@ import (
 // a pokemon list item is a pokemon
 type PokemonItem pokeapi.PokeapiRef[pokeapi.Pokemon]
 
+// ### Task 2 ###
+// This will fail as long as you do not implement the correct interface
+//
 // check if type implements interface
 var _ list.DefaultItem = (*PokemonItem)(nil)
 
@@ -15,7 +18,8 @@ var _ list.DefaultItem = (*PokemonItem)(nil)
 // Make sure that PokemonItem implements the list.DefaultItem interface
 // Check out the documentation for the the interface on pkg.go.dev
 //
-// If you are stuck, read up on embedding, e.g. here https://go.dev/doc/effective_go#embedding
+// If you are stuck, read up on embedding, e.g. here:
+// https://go.dev/doc/effective_go#embedding
 //
 // Think about how you could make the Pokemon list item look good in the list.
 // Maybe you want to make sure that the displayed item title is correctly capitalized?
