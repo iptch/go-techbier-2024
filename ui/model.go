@@ -9,8 +9,8 @@ import (
 // Define the model for our TUI. For any type to be a Model, it has to implement
 // the Model interface: https://pkg.go.dev/github.com/charmbracelet/bubbletea@v0.25.0#Model
 type model struct {
-	list    list.Model
-	pokemon *pokeapi.PokeapiRef[pokeapi.Pokemon]
+	list       list.Model
+	fullscreen bool
 }
 
 // InitialModel instantiates a model with a spinner for the waiting screen,
@@ -42,18 +42,23 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c":
 			return m, tea.Quit
+		case "/":
+			if m.fullscreen {
+				// consume slashes in fullscreen mode
+				return m, nil
+			}
 		case "q":
 			if m.list.FilterState() != list.Filtering {
 				return m, tea.Quit
 			}
 		case "enter":
 			if m.list.FilterState() != list.Filtering {
-				m.pokemon = (*pokeapi.PokeapiRef[pokeapi.Pokemon])(m.list.SelectedItem().(*PokemonItem))
+				m.fullscreen = true
 				return m, nil
 			}
 		case "esc":
-			if m.pokemon != nil {
-				m.pokemon = nil
+			if m.fullscreen {
+				m.fullscreen = false
 				// consume escape
 				return m, nil
 			}
@@ -82,9 +87,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // View renders the program's UI, which is just a string. The view is
 // rendered after every Update.
 func (m model) View() string {
-	if m.pokemon != nil {
-		return buildViewport(*m.pokemon, m.list.Height(), m.list.Width())
-	} else {
-		return m.list.View()
+	if m.fullscreen {
+		pokemon := (*pokeapi.PokeapiRef[pokeapi.Pokemon])(m.list.SelectedItem().(*PokemonItem))
+		return buildViewport(*pokemon, m.list.Height(), m.list.Width())
 	}
+	return m.list.View()
 }

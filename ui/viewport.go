@@ -69,7 +69,7 @@ func buildViewport(pokemonRef pokeapi.PokeapiRef[pokeapi.Pokemon], height, width
 	descriptionSection += "\n\n"
 
 	progressBar := progress.New(progress.WithDefaultGradient())
-	progressBar.PercentFormat = " %.f "
+	progressBar.PercentFormat = " %3.f "
 
 	for _, stat := range pokemon.Stats {
 		descriptionSection += progressBar.ViewAs(float64(stat.BaseStat) / 100.0)
