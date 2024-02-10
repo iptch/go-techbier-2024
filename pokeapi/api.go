@@ -13,25 +13,28 @@ type PokeapiRef[T any] struct {
 	Url  string `json:"url"`
 }
 
-type PokemonType struct {
-	Name string `json:"name"`
-	Url  string `json:"url"`
-}
-
 type PokemonList struct {
 	Results []PokeapiRef[Pokemon] `json:"results"`
 	NextUrl string                `json:"next"`
 }
 
+type PokemonStat struct {
+	// no fields used
+}
+
+type PokemonType struct {
+	Name string `json:"name"`
+}
+
 type Pokemon struct {
 	Name  string `json:"name"`
 	Types []struct {
-		Slot int         `json:"slot"`
-		Type PokemonType `json:"type"`
+		Slot int                     `json:"slot"`
+		Type PokeapiRef[PokemonType] `json:"type"`
 	} `json:"types"`
 	Stats []struct {
-		BaseStat int                  `json:"base_stat"`
-		Stat     PokeapiRef[struct{}] `json:"stat"`
+		BaseStat int                     `json:"base_stat"`
+		Stat     PokeapiRef[PokemonStat] `json:"stat"`
 	} `json:"stats"`
 	Sprites map[string]interface{} `json:"sprites"`
 }

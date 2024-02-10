@@ -13,12 +13,12 @@ type PokemonItem pokeapi.PokeapiRef[pokeapi.Pokemon]
 // check if type implements interface
 var _ list.Item = (*PokemonItem)(nil)
 
-func (i *PokemonItem) Title() string {
+func (i PokemonItem) Title() string {
 	return cases.Title(language.AmericanEnglish).String(i.Name)
 }
 
-func (i *PokemonItem) Description() string {
+func (i PokemonItem) Description() string {
 	return ""
 }
 
-func (i *PokemonItem) FilterValue() string { return i.Name }
+func (i PokemonItem) FilterValue() string { return i.Name }

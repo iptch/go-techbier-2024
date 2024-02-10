@@ -70,7 +70,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// download has started
 			cmds = append(cmds, m.list.StartSpinner())
 		}
-		cmds = append(cmds, m.list.InsertItem(len(m.list.Items()), (*PokemonItem)(msg.Pokemon)))
+		cmds = append(cmds, m.list.InsertItem(len(m.list.Items()), PokemonItem(msg.Pokemon)))
 		return m, tea.Batch(cmds...)
 	case DownloadCompleted:
 		m.list.StopSpinner()
@@ -88,8 +88,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // rendered after every Update.
 func (m model) View() string {
 	if m.fullscreen {
-		pokemon := (*pokeapi.PokeapiRef[pokeapi.Pokemon])(m.list.SelectedItem().(*PokemonItem))
-		return buildViewport(*pokemon, m.list.Height(), m.list.Width())
+		pokemon := (pokeapi.PokeapiRef[pokeapi.Pokemon])(m.list.SelectedItem().(PokemonItem))
+		return buildViewport(pokemon, m.list.Height(), m.list.Width())
 	}
 	return m.list.View()
 }

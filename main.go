@@ -38,7 +38,7 @@ func DownloadPokemon(p *tea.Program) {
 	for pokemonRefs := range c {
 		for _, pokemonRef := range pokemonRefs {
 			pokemonRef := pokemonRef
-			p.Send(ui.NewPokemon{Pokemon: &pokemonRef})
+			p.Send(ui.NewPokemon{Pokemon: pokemonRef})
 		}
 	}
 	p.Send(ui.DownloadCompleted{})
