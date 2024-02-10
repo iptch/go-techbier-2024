@@ -356,7 +356,9 @@ func main() {
 **Now you are up!**
 
 Open our git repository and check out the branch `tasks/1`.  
-Look around the project and check out the file `tbd`.  
+
+Look around the project and check out the file `pokeapi/api.go`.  
+
 You will find instructions in the code.
 
 ---
@@ -393,7 +395,9 @@ func (g Goose) Quack() {
 **Now you are up!**
 
 Open our git repository and check out the branch `tasks/2`.  
-Look around the project and check out the file `tbd`.  
+
+Look around the project and check out the file `ui/item.go`.  
+
 You will find instructions in the code.
 
 ---
@@ -438,7 +442,9 @@ import java.util.ArrayList;
 **Now you are up!**
 
 Open our git repository and check out the branch `tasks/3`.  
-Look around the project and check out the file `tbd`.  
+
+Look around the project and check out the file `pokeapi/api.go`.  
+
 You will find instructions in the code.
 
 ---
@@ -448,6 +454,8 @@ You will find instructions in the code.
 Wow! You have come a long ways. 
 
 If you are still wanting to play around more, have a look at the branch `tasks/bonus`.
+
+You will want to start in `pokeapi/api.go`.
 
 ---
 
