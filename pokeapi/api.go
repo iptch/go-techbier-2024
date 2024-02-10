@@ -99,11 +99,28 @@ func (p *Pokemon) GetSpriteUrl() (string, error) {
 		if !ok {
 			return "", fmt.Errorf("key not found: %s", key)
 		}
+
+		// ### Task 3 ###
+		// First, we check, whether we have reached the end of our nested
+		// response structure yet.
 		if i != len(keys)-1 {
+
+			// ### Taks 3 ###
+			// We are not yet at the end of our traversal. For anything before
+			// "front_default", we would expect to get a map[string]any for value.
+			// Therefore, we do a type assertion on map[string]any, and to do this
+			// safely without crashing the program in case of an error, we use the
+			// comma-ok notation: https://go.dev/doc/effective_go#interface_conversions
 			spritesMap, ok = value.(map[string]any)
 			if !ok {
 				return "", fmt.Errorf("expected map")
 			}
+
+			// ### Task 3 ###
+			// If our index i is equal to the last index in our keys list, we
+			// would expect to find the spritesUrl of type string. Therefore,
+			// we make a type assertion on string, and if this successful update
+			// spritesUrl before we return it.
 		} else {
 			spritesUrl, ok = value.(string)
 			if !ok {
