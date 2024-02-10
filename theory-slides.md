@@ -38,6 +38,8 @@ Presented by Zak Cook & Selim Kälin
 
 - You get the chance to get your fingers dirty with your first Go project
 - After each theory block, we will give you time to mess around in some Go code  
+- It makes sense if more experienced Gophers sit with less experienced ones 
+  - Collaboration is very welcome!
 
 - Instructions to get the code skeleton:
 ```bash
@@ -361,6 +363,9 @@ Look around the project and check out the file `pokeapi/api.go`.
 
 You will find instructions in the code.
 
+
+We will continue in about *20 minutes*.
+
 ---
 
 ## Interfaces 
@@ -399,6 +404,9 @@ Open our git repository and check out the branch `tasks/2`.
 Look around the project and check out the file `ui/item.go`.  
 
 You will find instructions in the code.
+
+
+We will continue in about *20 minutes*.
 
 ---
 
@@ -446,6 +454,9 @@ Open our git repository and check out the branch `tasks/3`.
 Look around the project and check out the file `pokeapi/api.go`.  
 
 You will find instructions in the code.
+
+
+We will continue in about *20 minutes*.
 
 ---
 
