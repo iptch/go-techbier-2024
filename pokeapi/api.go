@@ -80,6 +80,7 @@ func (p PokeapiRef[T]) Get() (*T, error) {
 
 	return &pokemon, nil
 }
+
 func (p *Pokemon) GetSpriteUrl() (string, error) {
 	keys := []string{"other", "official-artwork", "front_default"}
 

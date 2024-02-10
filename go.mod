@@ -1,6 +1,6 @@
 module github.com/iptch/pokedex
 
-go 1.20
+go 1.21
 
 require (
 	github.com/TheZoraiz/ascii-image-converter v1.13.1
