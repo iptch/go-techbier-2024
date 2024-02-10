@@ -54,6 +54,11 @@ func buildViewport(pokemonRef pokeapi.PokeapiRef[pokeapi.Pokemon], height, width
 	}
 
 	var descriptionSection string
+
+	descriptionSection += "\n"
+	descriptionSection += textStyle().Underline(true).Render(strings.ToUpper(pokemon.Name))
+	descriptionSection += "\n"
+
 	descriptionSection += "\n"
 	for _, type_ := range pokemon.Types {
 		typeName := type_.Type.Name
