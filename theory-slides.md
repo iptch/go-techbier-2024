@@ -1,10 +1,10 @@
+---
+author: Zak Cook & Selim Kälin
+---
+
 # Welcome to Go!
 
 Welcome to the Go Techbier!
-
-February 13th, 2024
-
-Presented by Zak Cook & Selim Kälin
 
 ---
 
@@ -118,6 +118,27 @@ func main() {
     hello := "World"  // Short syntax for declaration and assignment, type is inferred
     fmt.Println(hello)
 }
+```
+
+---
+
+## Pop quiz
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+    x := "who"
+    {
+        x := "can guess"
+        x = "this variable?"
+        fmt.Println(x)
+    }
+    fmt.Println(x)
+}
+
 ```
 
 ---
