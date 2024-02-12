@@ -279,6 +279,56 @@ func main() {
 
 ---
 
+## Task 1
+
+**Now you are up!**
+
+Open our git repository and check out the branch `tasks/1`.
+
+Look around the project and check out the file `pokeapi/api.go`.
+
+You will find instructions in the code.
+
+We will continue in about _20 minutes_. The next slide contains some details
+about for loops and slices, which you need to task 1b.
+
+---
+
+## For loops and slices
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+    var numbers = make([]int, 0)
+
+    // For loop
+    for i := 0; i < 3; i++ {
+        numbers = append(numbers, i)
+    }
+
+    // To imitate a while loop
+    i := 3
+    for i != 5 {
+        numbers = append(numbers, i)
+        i += 1
+    }
+
+    // Add many elements
+    moreNumbers := []int{5, 6, 7}
+    numbers = append(numbers, moreNumbers...)
+
+    // Range structure
+    for index, value := range numbers {
+        fmt.Printf("Value at index %d: %d\n", index, value)
+    }
+}
+```
+
+---
+
 ## Packages, Exports, and Constants Syntax Basics
 
 ```go
@@ -357,30 +407,6 @@ context in which they are defined:
 
 ---
 
-## Function Syntax
-
-```go
-// Exported function with no return value
-func SayHello() {
-    fmt.Println("Hello!")
-}
-```
-
-```java
-// Apparently in Java, everything must be a class ...
-public class Hello {
-  void sayHello() {
-    System.out.println("Hello!");
-  }
-
-  public static void main(String[] args) {
-    sayHello();
-  }
-}
-```
-
----
-
 ## Method Syntax
 
 ```go
@@ -389,73 +415,6 @@ func (c Consultant) getAhvNumber() ahvNumber {
     return c.ahvNumber
 }
 ```
-
----
-
-## Control Structures
-
-Go offers the following control structures:
-
-- if / else if / else
-- switch / case
-- for / range / break / continue
-- (select, defer, panic, go to)
-
----
-
-```go
-// If / else if / else structure
-if condition {
-    doSomething()
-} else if someOtherCondition {
-    doSomethingElse()
-} else {
-    doNothing()
-}
-
-// Switch-case structure
-switch switchValue {
-case caseOneValue:
-    // Code for case 1
-case caseTwoValue:
-    // Code for case 2
-default:
-    // Code for default case
-}
-```
-
----
-
-```go
-// For loop
-for i := 0; i < 10; i++ {
-    fmt.Sprintf("Current number: %d", i)
-}
-
-// To imitate a while loop
-for condition {
-    // Code to execute while condition is true
-}
-
-// Range structure
-for index, value := range someCollection {
-    fmt.Sprintf("Value at index %d: %d", index, value)
-}
-```
-
----
-
-## Task 1
-
-**Now you are up!**
-
-Open our git repository and check out the branch `tasks/1`.
-
-Look around the project and check out the file `pokeapi/api.go`.
-
-You will find instructions in the code.
-
-We will continue in about _20 minutes_.
 
 ---
 
