@@ -72,14 +72,6 @@ About Go ...
 
 ---
 
-## Standard Library
-
-- Go features a powerful and extensive standard library
-- It covers areas such as I/O operations, text and image processing, cryptography, network programming, etc.
-- You can find an overview here: https://pkg.go.dev/std
-
----
-
 ## Standard Types and Syntax
 
 - the full language specification can be found at https://go.dev/ref/spec
@@ -146,23 +138,35 @@ const Pi float64 = 3.1415926
 ## Arrays, Slices, Maps
 
 ```go
-// Arrays have a fixed size
-var myFirstArray [10]int
-myFirstArray[4] = 7
+package main
 
-mySecondArray := [3]int{1, 2, 3}
+import "fmt"
 
-// Slices are dynamic
-var myFirstSlice = []float64
-myFirstSlice = append(myFirstSlice, 2.9)
+func main() {
+    // Arrays have a fixed size
+    var myFirstArray [10]int
+    myFirstArray[4] = 7
+    fmt.Println(myFirstArray)
 
-mySecondSlice := []float64{1.0, 2.0, 3.0}
+    mySecondArray := [3]int{1, 2, 3}
+    fmt.Println(mySecondArray)
 
-// Maps are similar to hashes or dictionaries
-var myFirstMap map[string]string
-myFirstMap["one"] = "two"
+    // Slices are dynamic
+    var myFirstSlice = make([]float64, 0)
+    myFirstSlice = append(myFirstSlice, 2.9)
+    fmt.Println(myFirstSlice)
 
-mySecondMap := map[int]string{1: "one", 2: "two"}
+    mySecondSlice := []float64{1.0, 2.0, 3.0}
+    fmt.Println(mySecondSlice)
+
+    // Maps are similar to hashes or dictionaries
+    var myFirstMap = make(map[string]string)
+    myFirstMap["one"] = "two"
+    fmt.Println(myFirstMap)
+
+    mySecondMap := map[int]string{1: "one", 2: "two"}
+    fmt.Println(mySecondMap)
+}
 ```
 
 ---
