@@ -143,6 +143,142 @@ func main() {
 
 ---
 
+## Structs and visibility
+
+```go
+package main
+
+import "fmt"
+
+// Define a new type
+type Consultant struct {
+    Name      string
+    Age       int
+    Project   string
+    ahvNumber string // unexported (private) field due to lowercase
+}
+
+func main() {
+    // initialize fields with order
+    host1 := Consultant{"Zak Cook", 27, "BIT CBCD", "756.0001.0002.03"}
+    fmt.Println(host1)
+
+    // initialize fields by name
+    host2 := Consultant{
+        Name: "Selim Kaelin",
+        // forgot how old selim was
+        Project:   host1.Project,      // access fields with dot syntax
+        ahvNumber: "756.0001.0002.04", // this would not work from another package
+    }
+    fmt.Println(host2)
+
+    var host3 Consultant // no initialization
+    host3.Name = "Jakob"
+    fmt.Println(host3)
+
+    // host1.ahvNumber from another package would not work!
+}
+
+```
+
+---
+
+## Functions and pointers
+
+```go
+package main
+
+import "fmt"
+
+func incrementByValue(x int) int {
+    return x + 1
+}
+
+// void return type
+func incrementByReference(x *int) {
+    *x = *x + 1
+}
+
+func main() {
+    a := 5
+    incrementByReference(&a)
+    fmt.Println(a)
+    fmt.Println(incrementByValue(a))
+}
+```
+
+---
+
+## Error handling with if statements
+
+```go
+package main
+
+import (
+    "fmt"
+    "os"
+)
+
+func main() {
+    bytesWritten, err := createFile("/tmp/defer.txt")
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "error: %s\n", err)
+        os.Exit(1)
+    }
+    fmt.Printf("wrote %d bytes.\n", bytesWritten)
+}
+
+func createFile(p string) (int, error) {
+    f, err := os.Create(p)
+    // this is how error handling is done in go
+    if err != nil {
+        return 0, err
+    }
+    // this is only executed after the function returns
+    defer f.Close()
+
+    return fmt.Fprintln(f, "what up")
+}
+```
+
+---
+
+## All together now: parsing JSON
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "os"
+)
+
+type Consultant struct {
+    FullName string `json:"full_name"`
+    Age      int    `json:"age"`
+    Project  string `json:"project"`
+}
+
+func main() {
+    f, err := os.Open("slides/big_p.json")
+    if err != nil {
+        panic(err)
+    }
+    defer f.Close()
+
+    var consultant Consultant
+    err = json.NewDecoder(f).Decode(&consultant)
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Println(consultant)
+}
+```
+
+---
+
 ## Packages, Exports, and Constants Syntax Basics
 
 ```go
@@ -200,71 +336,6 @@ func main() {
 
     mySecondMap := map[int]string{1: "one", 2: "two"}
     fmt.Println(mySecondMap)
-}
-```
-
----
-
-## Structs
-
-Structs are a sequence of named elements, called fields (similar to classes in Java):
-
-```go
-package main
-
-import "fmt"
-
-// Define a new type
-type Consultant struct {
-    Name      string
-    Age       int
-    Project   string
-    ahvNumber [4]int // unexported field
-}
-
-func main() {
-    // initialize fields with order
-    host1 := Consultant{"Zak Cook", 27, "BIT CBCD", [4]int{756, 1, 2, 3}}
-
-    // initialize fields by name
-    host2 := Consultant{
-        Name:    "Selim Kaelin",
-        Age:     27,
-        Project: host1.Project,
-        // selim has no ahv number for some reason
-    }
-
-    fmt.Println(host1, host2)
-}
-```
-
----
-
-## Pointers and References
-
-Pointers are declared using the `*<variable>` syntax. Similarly, to pass a
-reference to a variable, we use the syntax `&<variable>`.
-
-```go
-package main
-
-import "fmt"
-
-func incrementByValue(x int) {
-    x = x + 1
-}
-
-func incrementByReference(x *int) {
-    *x = *x + 1
-}
-
-func main() {
-    a := 5
-    incrementByValue(a)
-    fmt.Println(a)            // Output: 5
-
-    incrementByReference(&a)
-    fmt.Println(a)            // Output: 6
 }
 ```
 
@@ -369,38 +440,6 @@ for condition {
 // Range structure
 for index, value := range someCollection {
     fmt.Sprintf("Value at index %d: %d", index, value)
-}
-```
-
----
-
-## Dealing with JSON
-
-- Go is widely used in web and cloud technology, where formats such as JSON and
-  YAML are omnipresent
-- The standard library has some helpful tools in `encoding/json`
-
-```go
-package main
-
-import "encoding/json"
-
-type Consultant struct {
-    Name      string  `json:"name" yaml:"name"`
-    Age       int     `json:"age" yaml:"age"`
-    Project   string  `json:"project" yaml:"project"`
-}
-
-func main() {
-    // Struct -> JSON
-    writeConsultant := Consultant{Name: "Felix Grüne", Age: 42, Project: "Unknown"}
-    jsonData, err := json.Marshal(writeConsultant)
-    // Handle error
-
-    // JSON -> Struct
-    var readConsultant Consultant
-    err = json.Unmarshal(jsonData, &readConsultant)
-    // Handle error
 }
 ```
 
