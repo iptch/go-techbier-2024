@@ -106,16 +106,16 @@ var (  // Declaration blocks are delimited by parantheses
     myFirstString   string 
 )
 
-x = 5  // Variable definition, x has to be declared previously
+x = 5  // Variable assignment, x has to be declared previously
 var (
     isTrue  bool = true
     isFalse bool = false
 )
 
-hello := "World"  // Short syntax, type is inferred 
+hello := "World"  // Short syntax for declaration and assignment, type is inferred 
 ```
+Compare this to Java:
 ```java
-// Compare this to Java
 int myInt = 10;
 ```
 
@@ -211,7 +211,7 @@ func incrementByReference(x *int) {
 }
 
 func main() {
-    myValue := 5
+    a := 5
     incrementByValue(a)
     fmt.Println(a)            // Output: 5
 
