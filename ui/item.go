@@ -2,7 +2,7 @@ package ui
 
 import (
 	"github.com/charmbracelet/bubbles/list"
-	"github.com/iptch/pokedex/pokeapi"
+	"github.com/iptch/go-techbier-2024/pokeapi"
 )
 
 // a pokemon list item is a pokemon
