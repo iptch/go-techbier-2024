@@ -4,7 +4,7 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/iptch/pokedex/pokeapi"
+	"github.com/iptch/go-techbier-2024/pokeapi"
 )
 
 // Define the model for our TUI. For any type to be a Model, it has to implement
