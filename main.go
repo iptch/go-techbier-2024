@@ -10,6 +10,7 @@ import (
 const expectedPokemonCount = 1302
 
 func main() {
+	fmt.Println("Downloading pokemon...")
 	results, err := pokeapi.GetAllPokemon()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %s", err)
