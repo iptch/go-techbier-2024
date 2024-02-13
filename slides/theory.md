@@ -454,7 +454,7 @@ import java.util.ArrayList;
 
 ---
 
-## Maps and "comma ok" notation
+## Maps and "comma ok" Notation
 
 ```go
 package main
@@ -475,7 +475,7 @@ func main() {
     }
 
     for k2, v2 := range m2 {
-        // can be written without the ok, will panic on failure
+        // Can be written without the ok, will panic on failure
         v1, ok := m1[k2]
         if ok && v1 == v2 {
             fmt.Printf("%s is present and equal in both maps\n", k2)
@@ -486,7 +486,7 @@ func main() {
 
 ---
 
-## Type assertions
+## Type Assertions
 
 ```go
 package main
@@ -499,11 +499,11 @@ func main() {
     var canBeAnything interface{}
     canBeAnything = "a string"
 
-    // type **assertion**. we are telling Go "this is definitely a string, convert to one"
+    // Type **assertion**. we are telling Go "this is definitely a string, convert to one"
     ofTypeString := canBeAnything.(string)
     fmt.Println(ofTypeString)
 
-    // comma ok notation possible
+    // Comma ok notation possible
     _, ok := canBeAnything.(int)
     if !ok {
         fmt.Println("wasn't an int")
@@ -537,7 +537,7 @@ We will continue in about _20 minutes_.
 
 ---
 
-## Channels and goroutines
+## Channels and Goroutines
 
 ```go
 package main
@@ -553,10 +553,10 @@ func sendMessages(messages chan string) {
 func main() {
     messages := make(chan string)
 
-    // starts in new thread
+    // Starts in new thread
     go sendMessages(messages)
 
-    // wait for messages on the channel until it is closed
+    // Wait for messages on the channel until it is closed
     for msg := range messages {
         fmt.Println(msg)
     }
