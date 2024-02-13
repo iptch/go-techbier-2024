@@ -5,7 +5,6 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/iptch/pokedex/pokeapi"
 	"github.com/iptch/pokedex/ui"
 )
 
@@ -26,16 +25,17 @@ func main() {
 // Once the download has completed it sends a downloadCompleted message to the
 // bubbles Program.
 func DownloadPokemon(p *tea.Program) {
-	c := make(chan []pokeapi.PokemonRef)
+	// TODO
+	//
+	// Bonus Task
+	//
+	// Here we want to download all the Pokemon in a goroutine. To do this, create
+	// a channel here with `make`, and pass it to the GetAllPokemon function from the PokeAPI. You'll need
+	// to adapt GetAllPokemon to send messages over the channel, and close the channel when completed.
+	//
+	// Then in this function go through the elements of this channel, and for each one, send a `NewPokemon` message
+	// to the bubbletea program.
 
-	go pokeapi.GetAllPokemon(c)
-
-	// create list from Pokémon items
-	for pokemonRefs := range c {
-		for _, pokemonRef := range pokemonRefs {
-			pokemonRef := pokemonRef
-			p.Send(ui.NewPokemon{Pokemon: pokemonRef})
-		}
-	}
+	// Notify the program that download has completed.
 	p.Send(ui.DownloadCompleted{})
 }

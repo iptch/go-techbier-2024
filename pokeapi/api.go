@@ -8,6 +8,13 @@ import (
 	"github.com/TheZoraiz/ascii-image-converter/aic_package"
 )
 
+// TODO
+//
+// Bonus bonus task
+//
+// Don't you feel like there's some repetition in these structs? Go introduced generics some time ago,
+// feel free to adapt this code to use generics :)
+
 type PokemonTypeRef struct {
 	Name string `json:"name"`
 	Url  string `json:"url"`
@@ -53,7 +60,6 @@ type Pokemon struct {
 // A GET on the url provided returns a list of results and a next URL to perform
 // another GET request on for another set of Pokémon.
 func GetAllPokemon(c chan []PokemonRef) error {
-	defer close(c)
 
 	url := "https://pokeapi.co/api/v2/pokemon"
 
@@ -70,7 +76,11 @@ func GetAllPokemon(c chan []PokemonRef) error {
 			return err
 		}
 
-		c <- pokemonList.Results
+		// TODO
+		//
+		// Bonus Task
+		//
+		// Send results over the channel here. Make sure to close the channel! (remember defer?)
 
 		url = pokemonList.NextUrl
 	}
