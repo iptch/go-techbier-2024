@@ -537,6 +537,34 @@ We will continue in about _20 minutes_.
 
 ---
 
+## Channels and goroutines
+
+```go
+package main
+
+import "fmt"
+
+func sendMessages(messages chan string) {
+    messages <- "ping"
+    messages <- "pong"
+    close(messages)
+}
+
+func main() {
+    messages := make(chan string)
+
+    // starts in new thread
+    go sendMessages(messages)
+
+    // wait for messages on the channel until it is closed
+    for msg := range messages {
+        fmt.Println(msg)
+    }
+}
+```
+
+---
+
 ## Bonus Tasks
 
 Wow! You have come a long ways.
@@ -551,5 +579,5 @@ You will want to start in `pokeapi/api.go`.
 ## Useful Resources
 
 - Go official documentation: https://go.dev/doc/
-- Effective Go (must-read): https://go.dev/doc/effective_go
+- Effective Go (must-read): https://go.dev/doc/effective\_go
 - awesome-go: https://github.com/avelino/awesome-go
