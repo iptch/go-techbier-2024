@@ -7,5 +7,5 @@ type DownloadCompleted struct {
 }
 
 type NewPokemon struct {
-	Pokemon pokeapi.PokeapiRef[pokeapi.Pokemon]
+	Pokemon pokeapi.PokemonRef
 }

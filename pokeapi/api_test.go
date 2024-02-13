@@ -7,7 +7,7 @@ import (
 const dittoUrl = "https://pokeapi.co/api/v2/pokemon/ditto"
 
 func TestSpriteUrl(t *testing.T) {
-	pokemonRef := PokeapiRef[Pokemon]{Url: dittoUrl}
+	pokemonRef := PokemonRef{Url: dittoUrl}
 	pokemon, err := pokemonRef.Get()
 	if err != nil {
 		t.Fatal(err)
@@ -21,21 +21,3 @@ func TestSpriteUrl(t *testing.T) {
 	}
 }
 
-func TestGeneric(t *testing.T) {
-	pokemonRef := PokeapiRef[Pokemon]{Url: dittoUrl}
-	pokemon, err := pokemonRef.Get()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// note the generic type
-	typeRef := pokemon.Types[0].Type
-	type_, err := typeRef.Get()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if type_.Name != "normal" {
-		t.Fatal("pokemon type mismatch")
-	}
-}

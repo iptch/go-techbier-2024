@@ -8,14 +8,24 @@ import (
 	"github.com/TheZoraiz/ascii-image-converter/aic_package"
 )
 
-type PokeapiRef[T any] struct {
+type PokemonTypeRef struct {
+	Name string `json:"name"`
+	Url  string `json:"url"`
+}
+
+type PokemonStatRef struct {
+	Name string `json:"name"`
+	Url  string `json:"url"`
+}
+
+type PokemonRef struct {
 	Name string `json:"name"`
 	Url  string `json:"url"`
 }
 
 type PokemonList struct {
-	Results []PokeapiRef[Pokemon] `json:"results"`
-	NextUrl string                `json:"next"`
+	Results []PokemonRef `json:"results"`
+	NextUrl string       `json:"next"`
 }
 
 type PokemonStat struct {
@@ -29,12 +39,12 @@ type PokemonType struct {
 type Pokemon struct {
 	Name  string `json:"name"`
 	Types []struct {
-		Slot int                     `json:"slot"`
-		Type PokeapiRef[PokemonType] `json:"type"`
+		Slot int            `json:"slot"`
+		Type PokemonTypeRef `json:"type"`
 	} `json:"types"`
 	Stats []struct {
-		BaseStat int                     `json:"base_stat"`
-		Stat     PokeapiRef[PokemonStat] `json:"stat"`
+		BaseStat int            `json:"base_stat"`
+		Stat     PokemonStatRef `json:"stat"`
 	} `json:"stats"`
 	Sprites map[string]interface{} `json:"sprites"`
 }
@@ -42,7 +52,7 @@ type Pokemon struct {
 // GetAllPokemon reads all available Pokémon from the pokeapi incrementally.
 // A GET on the url provided returns a list of results and a next URL to perform
 // another GET request on for another set of Pokémon.
-func GetAllPokemon(c chan []PokeapiRef[Pokemon]) error {
+func GetAllPokemon(c chan []PokemonRef) error {
 	defer close(c)
 
 	url := "https://pokeapi.co/api/v2/pokemon"
@@ -68,14 +78,14 @@ func GetAllPokemon(c chan []PokeapiRef[Pokemon]) error {
 	return nil
 }
 
-func (p PokeapiRef[T]) Get() (*T, error) {
+func (p PokemonRef) Get() (*Pokemon, error) {
 	resp, err := http.Get(p.Url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	var pokemon T
+	var pokemon Pokemon
 	err = json.NewDecoder(resp.Body).Decode(&pokemon)
 	if err != nil {
 		return nil, err
