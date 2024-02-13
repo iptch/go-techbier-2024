@@ -11,17 +11,18 @@ Welcome to the Go Techbier!
 # Agenda
 
 - Go Basics
-- Standard Library
 - Standard Types and Syntax
-- Arrays, Slices, Maps
 - Structs
-- References and Pointers
-- Functions and Methods
-- Control Structures
+- Functions and Pointers
+- Error Handling
 - Dealing with JSON
 
 **You are up!**
 
+- Loops and Slices
+- Packages, Exports, Constants
+- Arrays, Slices, Maps
+- Methods
 - Interfaces
 
 **You are up!**
@@ -50,10 +51,10 @@ cd ~/Downloads
 sudo rm -rf /usr/local/go && tar -C /usr/local -xzf <go-version.tar.gz>
 export PATH=$PATH:/usr/local/go/bin
 
-# check installation
+# Check installation
 go version
 
-# get skeleton code
+# Get skeleton code
 git clone https://github.com/iptch/go-techbier-2024.git
 ```
 
@@ -104,7 +105,7 @@ func main() {
         someFloat       float64
         myFirstString   string
     )
-    // variables take default value when uninitialized
+    // Variables take default value when uninitialized
     fmt.Println(x, myBoolean, unsignedInteger, someFloat, myFirstString)
 
     x = 5  // Variable assignment, x has to be declared previously
@@ -122,7 +123,7 @@ func main() {
 
 ---
 
-## Pop quiz
+## Pop Quiz
 
 ```go
 package main
@@ -143,7 +144,7 @@ func main() {
 
 ---
 
-## Structs and visibility
+## Structs and Visibility
 
 ```go
 package main
@@ -155,24 +156,24 @@ type Consultant struct {
     Name      string
     Age       int
     Project   string
-    ahvNumber string // unexported (private) field due to lowercase
+    ahvNumber string // Unexported (private) field due to lowercase
 }
 
 func main() {
-    // initialize fields with order
+    // Initialize fields with order
     host1 := Consultant{"Zak Cook", 27, "BIT CBCD", "756.0001.0002.03"}
     fmt.Println(host1)
 
-    // initialize fields by name
+    // Initialize fields by name
     host2 := Consultant{
         Name: "Selim Kaelin",
-        // forgot how old selim was
-        Project:   host1.Project,      // access fields with dot syntax
-        ahvNumber: "756.0001.0002.04", // this would not work from another package
+        // Forgot how old selim was
+        Project:   host1.Project,      // Access fields with dot syntax
+        ahvNumber: "756.0001.0002.04", // This would not work from another package
     }
     fmt.Println(host2)
 
-    var host3 Consultant // no initialization
+    var host3 Consultant // No initialization
     host3.Name = "Jakob"
     fmt.Println(host3)
 
@@ -183,7 +184,15 @@ func main() {
 
 ---
 
-## Functions and pointers
+## Functions and Pointers
+
+
+To distinguish between functions and methods in Go, we have to look at the
+context in which they are defined:
+
+- Functions: standalone procedure, not associated with any object, i.e. a struct
+
+Pointers are defined using the `*` notation and referenced using `&`.
 
 ```go
 package main
@@ -194,7 +203,7 @@ func incrementByValue(x int) int {
     return x + 1
 }
 
-// void return type
+// Void return type
 func incrementByReference(x *int) {
     *x = *x + 1
 }
@@ -209,7 +218,7 @@ func main() {
 
 ---
 
-## Error handling with if statements
+## Error Handling With if Statements
 
 ```go
 package main
@@ -230,11 +239,11 @@ func main() {
 
 func createFile(p string) (int, error) {
     f, err := os.Create(p)
-    // this is how error handling is done in go
+    // This is how error handling is done in go
     if err != nil {
         return 0, err
     }
-    // this is only executed after the function returns
+    // This is only executed after the function returns
     defer f.Close()
 
     return fmt.Fprintln(f, "what up")
@@ -243,7 +252,7 @@ func createFile(p string) (int, error) {
 
 ---
 
-## All together now: parsing JSON
+## All Together Now: Parsing JSON
 
 ```go
 package main
@@ -294,7 +303,7 @@ about for loops and slices, which you need to task 1b.
 
 ---
 
-## For loops and slices
+## For Loops and Slices
 
 ```go
 package main
@@ -302,6 +311,7 @@ package main
 import "fmt"
 
 func main() {
+    // Create a slice
     var numbers = make([]int, 0)
 
     // For loop
@@ -391,23 +401,16 @@ func main() {
 
 ---
 
-## Functions and Methods
+## Methods and Their Syntax
 
 To distinguish between functions and methods in Go, we have to look at the
 context in which they are defined:
-
-- Functions
-  - standalone procedure, not associated with any object, i.e. a struct
 
 - Methods:
   - like a function but contains a receiver, which specifies what type the
     method belongs to
   - receiver can be any type, but in most cases it is a struct or pointer to a
     struct
-
----
-
-## Method Syntax
 
 ```go
 // Unexported method with a return value, c Consultant is the receiver object
