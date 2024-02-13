@@ -67,10 +67,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, tea.Quit
 			}
 		case " ":
-			if m.list.FilterState() != list.Filtering {
-				m.fullscreen = !m.fullscreen
-				return m, nil
-			}
+			//if m.list.FilterState() != list.Filtering {
+			//	m.fullscreen = !m.fullscreen
+			//	return m, nil
+			//}
 		}
 
 	// leave other keys to fall through to list update
