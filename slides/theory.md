@@ -454,15 +454,6 @@ import java.util.ArrayList;
 
 ---
 
-## Go Management Tools
-
-- Just like its package management, Go offers very capable management tools
-  - `go fmt` for code formatting
-  - `go mod`, `go get`, and `go install` for module and dependency management
-  - `go test` for testing
-
----
-
 ## Maps and "comma ok" notation
 
 ```go
@@ -522,6 +513,15 @@ func main() {
 
 ---
 
+## Go Management Tools
+
+- Just like its package management, Go offers very capable management tools
+  - `go fmt` for code formatting
+  - `go mod`, `go get`, and `go install` for module and dependency management
+  - `go test` for testing
+
+---
+
 ## Task 3
 
 **Now you are up!**
@@ -530,7 +530,8 @@ Open our git repository and check out the branch `tasks/3`.
 
 Look around the project and check out the file `pokeapi/api.go`.
 
-You will find instructions in the code.
+You will find instructions in the code. We have added a test in `pokeapi/api_test.go`,
+check it out and run it with `go test ./...`.
 
 We will continue in about _20 minutes_.
 
