@@ -2,10 +2,7 @@ package pokeapi
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-
-	"github.com/TheZoraiz/ascii-image-converter/aic_package"
 )
 
 type PokemonTypeRef struct {
@@ -95,44 +92,4 @@ func (p PokemonRef) Get() (*Pokemon, error) {
 	}
 
 	return &pokemon, nil
-}
-
-func (p *Pokemon) GetSpriteUrl() (string, error) {
-	keys := []string{"other", "official-artwork", "front_default"}
-
-	spritesMap := p.Sprites
-
-	var spritesUrl string
-	for i, key := range keys {
-		value, ok := spritesMap[key]
-		if !ok {
-			return "", fmt.Errorf("key not found: %s", key)
-		}
-		if i != len(keys)-1 {
-			spritesMap, ok = value.(map[string]any)
-			if !ok {
-				return "", fmt.Errorf("expected map")
-			}
-		} else {
-			spritesUrl, ok = value.(string)
-			if !ok {
-				return "", fmt.Errorf("expected string")
-			}
-		}
-	}
-
-	return spritesUrl, nil
-}
-
-func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
-	spriteUrl, err := p.GetSpriteUrl()
-	if err != nil {
-		return "", err
-	}
-
-	flags := aic_package.DefaultFlags()
-	flags.Width = width
-	flags.Colored = true
-
-	return aic_package.Convert(spriteUrl, flags)
 }

@@ -98,8 +98,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // rendered after every Update.
 func (m model) View() string {
 	if m.fullscreen {
-		pokemon := (pokeapi.PokemonRef)(m.list.SelectedItem().(PokemonItem))
-		return buildViewport(pokemon, m.list.Height(), m.list.Width())
+		//pokemon := (pokeapi.PokeapiRef[pokeapi.Pokemon])(m.list.SelectedItem().(PokemonItem))
+		//return buildViewport(pokemon, m.list.Height(), m.list.Width())
 	}
 	return m.list.View()
 }
