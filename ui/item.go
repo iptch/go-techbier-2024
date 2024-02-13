@@ -8,10 +8,13 @@ import (
 )
 
 // a pokemon list item is a pokemon
-type PokemonItem pokeapi.PokeapiRef[pokeapi.Pokemon]
+type PokemonItem pokeapi.PokemonRef
 
+// ### Task 2 ###
+// This will fail as long as you do not implement the correct interface
+//
 // check if type implements interface
-var _ list.Item = (*PokemonItem)(nil)
+var _ list.DefaultItem = (*PokemonItem)(nil)
 
 // ### Task 2 ###
 // Through some research on the Go package index we find out that the

@@ -16,11 +16,16 @@ type model struct {
 
 // InitialModel instantiates a model with a spinner for the waiting screen,
 // a list to hold all retrieved Pokemon items, the initial app and error states.
-func InitialModel() model {
+func InitialModel(pokemon []pokeapi.PokemonRef) model {
 	delegate := list.NewDefaultDelegate()
 	delegate.ShowDescription = false
 
-	l := list.New([]list.Item{}, delegate, 0, 0)
+	items := make([]list.Item, 0, len(pokemon))
+	for _, pokemon := range pokemon {
+		items = append(items, PokemonItem(pokemon))
+	}
+
+	l := list.New(items, delegate, 0, 0)
 	l.Title = "Pokédex by ipt"
 	l.AdditionalShortHelpKeys = func() []key.Binding {
 		return []key.Binding{
@@ -93,8 +98,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // rendered after every Update.
 func (m model) View() string {
 	if m.fullscreen {
-		pokemon := (pokeapi.PokeapiRef[pokeapi.Pokemon])(m.list.SelectedItem().(PokemonItem))
-		return buildViewport(pokemon, m.list.Height(), m.list.Width())
+		//pokemon := (pokeapi.PokeapiRef[pokeapi.Pokemon])(m.list.SelectedItem().(PokemonItem))
+		//return buildViewport(pokemon, m.list.Height(), m.list.Width())
 	}
 	return m.list.View()
 }
