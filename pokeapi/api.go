@@ -8,14 +8,24 @@ import (
 	"github.com/TheZoraiz/ascii-image-converter/aic_package"
 )
 
-type PokeapiRef[T any] struct {
+type PokemonTypeRef struct {
+	Name string `json:"name"`
+	Url  string `json:"url"`
+}
+
+type PokemonStatRef struct {
+	Name string `json:"name"`
+	Url  string `json:"url"`
+}
+
+type PokemonRef struct {
 	Name string `json:"name"`
 	Url  string `json:"url"`
 }
 
 type PokemonList struct {
-	Results []PokeapiRef[Pokemon] `json:"results"`
-	NextUrl string                `json:"next"`
+	Results []PokemonRef `json:"results"`
+	NextUrl string       `json:"next"`
 }
 
 type PokemonStat struct {
@@ -29,12 +39,12 @@ type PokemonType struct {
 type Pokemon struct {
 	Name  string `json:"name"`
 	Types []struct {
-		Slot int                     `json:"slot"`
-		Type PokeapiRef[PokemonType] `json:"type"`
+		Slot int            `json:"slot"`
+		Type PokemonTypeRef `json:"type"`
 	} `json:"types"`
 	Stats []struct {
-		BaseStat int                     `json:"base_stat"`
-		Stat     PokeapiRef[PokemonStat] `json:"stat"`
+		BaseStat int            `json:"base_stat"`
+		Stat     PokemonStatRef `json:"stat"`
 	} `json:"stats"`
 	Sprites map[string]interface{} `json:"sprites"`
 }
@@ -42,40 +52,43 @@ type Pokemon struct {
 // GetAllPokemon reads all available Pokémon from the pokeapi incrementally.
 // A GET on the url provided returns a list of results and a next URL to perform
 // another GET request on for another set of Pokémon.
-func GetAllPokemon(c chan []PokeapiRef[Pokemon]) error {
-	defer close(c)
+func GetAllPokemon(n int) ([]PokemonRef, error) {
+	results := make([]PokemonRef, 0)
 
 	url := "https://pokeapi.co/api/v2/pokemon"
 
 	for url != "" {
 		resp, err := http.Get(url)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		defer resp.Body.Close()
 
 		var pokemonList PokemonList
 		err = json.NewDecoder(resp.Body).Decode(&pokemonList)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		c <- pokemonList.Results
+		results = append(results, pokemonList.Results...)
+		if len(results) >= n {
+			return results[:n], nil
+		}
 
 		url = pokemonList.NextUrl
 	}
 
-	return nil
+	return results, nil
 }
 
-func (p PokeapiRef[T]) Get() (*T, error) {
+func (p PokemonRef) Get() (*Pokemon, error) {
 	resp, err := http.Get(p.Url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	var pokemon T
+	var pokemon Pokemon
 	err = json.NewDecoder(resp.Body).Decode(&pokemon)
 	if err != nil {
 		return nil, err

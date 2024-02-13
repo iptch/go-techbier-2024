@@ -39,7 +39,7 @@ func getTypeColor(typeName string) lipgloss.Color {
 	return typeColor
 }
 
-func buildViewport(pokemonRef pokeapi.PokeapiRef[pokeapi.Pokemon], height, width int) string {
+func buildViewport(pokemonRef pokeapi.PokemonRef, height, width int) string {
 	pokemon, err := pokemonRef.Get()
 	if err != nil {
 		return fmt.Sprintf("Error fetching Pokemon: %s", err)

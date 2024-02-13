@@ -6,7 +6,7 @@ import (
 )
 
 // a pokemon list item is a pokemon
-type PokemonItem pokeapi.PokeapiRef[pokeapi.Pokemon]
+type PokemonItem pokeapi.PokemonRef
 
 // ### Task 2 ###
 // This will fail as long as you do not implement the correct interface
