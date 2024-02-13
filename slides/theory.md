@@ -365,42 +365,6 @@ func main() {
 
 ---
 
-## Arrays, Slices, Maps
-
-```go
-package main
-
-import "fmt"
-
-func main() {
-    // Arrays have a fixed size
-    var myFirstArray [10]int
-    myFirstArray[4] = 7
-    fmt.Println(myFirstArray)
-
-    mySecondArray := [3]int{1, 2, 3}
-    fmt.Println(mySecondArray)
-
-    // Slices are dynamic
-    var myFirstSlice = make([]float64, 0)
-    myFirstSlice = append(myFirstSlice, 2.9)
-    fmt.Println(myFirstSlice)
-
-    mySecondSlice := []float64{1.0, 2.0, 3.0}
-    fmt.Println(mySecondSlice)
-
-    // Maps are similar to hashes or dictionaries
-    var myFirstMap = make(map[string]string)
-    myFirstMap["one"] = "two"
-    fmt.Println(myFirstMap)
-
-    mySecondMap := map[int]string{1: "one", 2: "two"}
-    fmt.Println(mySecondMap)
-}
-```
-
----
-
 ## Methods and Their Syntax
 
 To distinguish between functions and methods in Go, we have to look at the
@@ -496,6 +460,65 @@ import java.util.ArrayList;
   - `go fmt` for code formatting
   - `go mod`, `go get`, and `go install` for module and dependency management
   - `go test` for testing
+
+---
+
+## Maps and "comma ok" notation
+
+```go
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+
+    m1 := make(map[string]int)
+
+    m1["k1"] = 7
+    m1["k2"] = 13
+
+    m2 := map[string]int{
+        "k1": 7,
+    }
+
+    for k2, v2 := range m2 {
+        // can be written without the ok, will panic on failure
+        v1, ok := m1[k2]
+        if ok && v1 == v2 {
+            fmt.Printf("%s is present and equal in both maps\n", k2)
+        }
+    }
+}
+```
+
+---
+
+## Type assertions
+
+```go
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    var canBeAnything interface{}
+    canBeAnything = "a string"
+
+    // type **assertion**. we are telling Go "this is definitely a string, convert to one"
+    ofTypeString := canBeAnything.(string)
+    fmt.Println(ofTypeString)
+
+    // comma ok notation possible
+    _, ok := canBeAnything.(int)
+    if !ok {
+        fmt.Println("wasn't an int")
+    }
+}
+```
 
 ---
 
