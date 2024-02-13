@@ -19,9 +19,12 @@ func main() {
 		fmt.Println(pokemonRef.Name)
 	}
 	fmt.Println()
-	if len(results) == expectedPokemonCount {
-		fmt.Println("looking good! you've completed task 1.")
-	} else {
-		fmt.Println("good job, you can move to task 1b.")
+	switch len(results) {
+	case expectedPokemonCount:
+		fmt.Println("Good job! You've completed task 1.")
+	case 0:
+		fmt.Println("No pokemon listed. Check your code :)")
+	default:
+		fmt.Println("Looking good! You can move on to task 1b.")
 	}
 }
