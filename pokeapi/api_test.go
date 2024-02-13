@@ -20,4 +20,3 @@ func TestSpriteUrl(t *testing.T) {
 		t.Fatal("url mismatch")
 	}
 }
-

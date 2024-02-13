@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 
@@ -10,32 +11,22 @@ import (
 )
 
 func main() {
-	model := ui.InitialModel()
-	program := tea.NewProgram(model, tea.WithAltScreen())
+	numPokemon := flag.Int("n", 100, "number of pokemon to download")
+	flag.Parse()
 
-	go DownloadPokemon(program)
+	fmt.Println("downloading pokemon...")
 
-	if _, err := program.Run(); err != nil {
-		fmt.Println("Error running program:", err)
+	pokemon, err := pokeapi.GetAllPokemon(*numPokemon)
+	if err != nil {
+		fmt.Printf("error: %s\n", err)
 		os.Exit(1)
 	}
 
-}
+	model := ui.InitialModel(pokemon)
+	program := tea.NewProgram(model, tea.WithAltScreen())
 
-// DownloadPokemon will call GetAllPokemon to retrieve Pokémon from the PokéAPI.
-// Once the download has completed it sends a downloadCompleted message to the
-// bubbles Program.
-func DownloadPokemon(p *tea.Program) {
-	c := make(chan []pokeapi.PokemonRef)
-
-	go pokeapi.GetAllPokemon(c)
-
-	// create list from Pokémon items
-	for pokemonRefs := range c {
-		for _, pokemonRef := range pokemonRefs {
-			pokemonRef := pokemonRef
-			p.Send(ui.NewPokemon{Pokemon: pokemonRef})
-		}
+	if _, err := program.Run(); err != nil {
+		fmt.Printf("error: %s\n", err)
+		os.Exit(1)
 	}
-	p.Send(ui.DownloadCompleted{})
 }

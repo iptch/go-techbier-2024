@@ -16,11 +16,16 @@ type model struct {
 
 // InitialModel instantiates a model with a spinner for the waiting screen,
 // a list to hold all retrieved Pokemon items, the initial app and error states.
-func InitialModel() model {
+func InitialModel(pokemon []pokeapi.PokemonRef) model {
 	delegate := list.NewDefaultDelegate()
 	delegate.ShowDescription = false
 
-	l := list.New([]list.Item{}, delegate, 0, 0)
+	items := make([]list.Item, 0, len(pokemon))
+	for _, pokemon := range pokemon {
+		items = append(items, PokemonItem(pokemon))
+	}
+
+	l := list.New(items, delegate, 0, 0)
 	l.Title = "Pokédex by ipt"
 	l.AdditionalShortHelpKeys = func() []key.Binding {
 		return []key.Binding{
