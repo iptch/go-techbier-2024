@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/iptch/pokedex/pokeapi"
+	"github.com/iptch/go-techbier-2024/pokeapi"
 )
 
 const expectedPokemonCount = 1302
