@@ -30,8 +30,8 @@ respective solutions:
 
 ## Playing along
 
-If you want to go through the TechBier, we recommend starting We prepared some
-markdown [slides](/slides/theory.md) which we used together with
+If you want to go through the TechBier, we recommend starting at our markdown
+[slides](/slides/theory.md), which we used together with
 https://github.com/maaslalani/slides. You can either view it as plain markdown
 or run it with:
 
