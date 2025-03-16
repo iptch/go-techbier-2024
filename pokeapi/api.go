@@ -3,9 +3,13 @@ package pokeapi
 import (
 	"encoding/json"
 	"fmt"
+	_ "golang.org/x/image/webp"
+	"image"
+	_ "image/jpeg"
+	_ "image/png"
 	"net/http"
 
-	"github.com/TheZoraiz/ascii-image-converter/aic_package"
+	"github.com/zkck/image2ascii"
 )
 
 type PokeapiRef[T any] struct {
@@ -117,9 +121,16 @@ func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
 		return "", err
 	}
 
-	flags := aic_package.DefaultFlags()
-	flags.Width = width
-	flags.Colored = true
+	response, err := http.Get(spriteUrl)
+	if err != nil {
+		return "", err
+	}
+	defer response.Body.Close()
 
-	return aic_package.Convert(spriteUrl, flags)
+	img, _, err := image.Decode(response.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return image2ascii.DefaultConverter().Convert(img, uint(width), 0), nil
 }
