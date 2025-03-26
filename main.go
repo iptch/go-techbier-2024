@@ -2,33 +2,33 @@ package main
 
 import (
 	"fmt"
-	"os"
+	"log"
 
 	"github.com/iptch/go-techbier-2024/pokeapi"
 )
 
-const expectedPokemonCount = 1302
-
 func main() {
-	fmt.Println("Downloading pokemon...")
-	results, err := pokeapi.GetAllPokemon()
+	count, err := pokeapi.GetPokemonCount()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %s\n", err)
-		os.Exit(1)
+		log.Fatalf("Error getting count: %s\n", err)
 	}
 
+	log.Println("Collecting pokemon...")
+	results, err := pokeapi.GetAllPokemon()
+	if err != nil {
+		log.Fatalf("Error collecting Pokemon: %s\n", err)
+	}
 	for _, pokemonRef := range results {
 		fmt.Println(pokemonRef.Name)
 	}
-	fmt.Printf("%d/%d Pokemon listed.\n", len(results), expectedPokemonCount)
+	log.Printf("%d/%d Pokemon collected.\n", len(results), count)
 
-	fmt.Println()
 	switch len(results) {
-	case expectedPokemonCount:
-		fmt.Println("Good job! You've completed task 1.")
+	case count:
+		log.Println("Good job! You've completed task 1.")
 	case 0:
-		fmt.Println("No pokemon listed. Check your code :)")
+		log.Println("No pokemon were collected.")
 	default:
-		fmt.Println("Looking good! You can move on to task 1b.")
+		log.Println("Not quite there yet. Check your code :)")
 	}
 }
