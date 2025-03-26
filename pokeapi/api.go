@@ -11,7 +11,7 @@ type PokemonRef struct {
 }
 
 type PokemonListResponse struct {
-	Count   int         `json:"count"`
+	Count   int          `json:"count"`
 	NextUrl string       `json:"next"`
 	Results []PokemonRef `json:"results"`
 }
@@ -50,7 +50,7 @@ func GetPokemonCount() (int, error) {
 	defer response.Body.Close()
 
 	var pokemonListResponse PokemonListResponse
-    if err := json.NewDecoder(response.Body).Decode(&pokemonListResponse); err != nil {
+	if err := json.NewDecoder(response.Body).Decode(&pokemonListResponse); err != nil {
 		return 0, err
 	}
 
