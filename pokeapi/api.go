@@ -47,7 +47,6 @@ func GetAllPokemon() ([]PokemonRef, error) {
 		pokemonRefs = append(pokemonRefs, pokemonListResponse.Results...)
 
 		log.Printf("Collected %d Pokémon...", len(pokemonRefs))
-		break // TODO: Remove this when starting your implementation
 	}
 
 	return pokemonRefs, nil
