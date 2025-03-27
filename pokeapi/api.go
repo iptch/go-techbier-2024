@@ -2,6 +2,7 @@ package pokeapi
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -35,6 +36,7 @@ func GetAllPokemon() ([]PokemonRef, error) {
 
 		// TODO: Update stuff here :)
 
+		log.Printf("Collected %d Pokémon...", len(pokemonRefs))
 		break // TODO: Remove this when starting your implementation
 	}
 
