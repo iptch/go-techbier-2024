@@ -30,11 +30,21 @@ func GetAllPokemon() ([]PokemonRef, error) {
 	for currentListUrl != "" {
 
 		// TODO: Make an HTTP GET request to the current URL
+		response, err := http.Get(currentListUrl)
+		if err != nil {
+			return nil, err
+		}
+		defer response.Body.Close()
 
 		// TODO: Parse the response body with JSON into a `PokemonListResponse`
-		var _ PokemonListResponse
+		var pokemonListResponse PokemonListResponse
+		if err := json.NewDecoder(response.Body).Decode(&pokemonListResponse); err != nil {
+			return nil, err
+		}
 
 		// TODO: Update stuff here :)
+		currentListUrl = pokemonListResponse.NextUrl
+		pokemonRefs = append(pokemonRefs, pokemonListResponse.Results...)
 
 		log.Printf("Collected %d Pokémon...", len(pokemonRefs))
 		break // TODO: Remove this when starting your implementation
